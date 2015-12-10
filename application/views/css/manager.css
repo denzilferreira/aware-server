@@ -1,0 +1,200 @@
+/* --- Manager view --- */
+
+table#user-management {
+	width: 100%;
+	margin-top: 10px;
+}
+
+table#user-management tbody tr td {
+	color: #000000;
+}
+
+table#user-management tr td{
+}
+
+table#user-management #name-title, table#user-management #email-title  {
+	width: 227px;
+}
+
+table#user-management #developer-title, table#user-management #researcher-title, table#user-management #manager-title  {
+	width: 96px;
+	text-align: center;
+}
+
+table#user-management tbody tr td:nth-child(3) > label, td:nth-child(4) > label, td:nth-child(5) > label {
+	margin-left: 45%;
+	display: block;
+}
+
+
+table#user-management #active-title  {
+	width: 107px;
+}
+
+table#user-management .user-activated {
+/* 	padding-left: 19px; */
+	width: 90px;
+}
+
+
+tr#title td {
+	font-weight: bold;
+}
+
+/* --- Researchers view -- */
+
+table#researchers {
+	width: 100%;
+	margin-top: 10px;
+	table-layout: fixed;
+}
+
+table#researchers tr td{
+	cursor: pointer;
+}
+
+table#researchers tr td {
+	color: #000000;
+}
+
+table#researchers td.name {
+	width: 340px;
+	font-size: 1em;
+}
+
+table#researchers td.email {
+	width: 320px;
+}
+
+table#researchers td.studies {
+	width: 280px;
+}
+
+table#researchers div.tablesorter-header-inner {
+	font-weight: bold;
+}
+
+table#researchers .tablesorter-childRow.sub td {
+	font-size: 0.9em;
+	color: #555;
+	background-color: rgba(230, 245, 255, 0.3);
+}
+
+table#researchers .tablesorter-childRow td {
+	font-style: normal;
+	font-size: 0.9em;
+	background-color: rgba(230, 245, 255, 0.3);
+	color: #000000;
+}
+
+table#researchers .tablesorter-childRow td.study-name {
+	padding-left: 30px;
+}
+
+table#researchers .tablesorter-childRow td.no-studies {
+	font-style: italic;
+	padding-left: 30px;
+}
+
+table#researchers td.study-description {
+	white-space: nowrap; 
+	overflow: hidden; 
+	text-overflow: ellipsis;
+}
+
+.tablesorter-childRow td{
+	padding-left: 20px;
+	line-height: 20px !important;
+
+}
+
+.tablesorter-childRow tr {
+	
+}
+div.studydescription {
+	white-space:nowrap; 
+	width:250px;
+	overflow:hidden; 
+	text-overflow:ellipsis;
+	display:block;
+}
+
+/* --- Developers view --- */
+
+table#developers {
+	width: 100%;
+	margin-top: 10px;
+	table-layout: fixed;
+}
+
+table#developers tr td{
+	cursor: pointer;
+}
+
+table#developers tr td {
+	color: #000000;
+}
+
+table#developers td.name {
+	width: 340px;
+	font-size: 1em;
+}
+
+table#developers td.email {
+	width: 320px;
+}
+
+table#developers td.plugins {
+	width: 140px;
+}
+
+table#developers td.empty {
+	width: 140px;
+}
+
+
+table#developers td.plugin-desc {
+	white-space: nowrap; 
+	overflow: hidden; 
+	text-overflow: ellipsis;
+}
+
+table#developers div.tablesorter-header-inner {
+	font-weight: bold;
+}
+
+table#developers .tablesorter-childRow.sub td {
+	font-size: 0.9em;
+	color: #555;
+	background-color: rgba(230, 245, 255, 0.3);
+}
+
+table#developers .tablesorter-childRow td {
+	font-style: normal;
+	font-size: 0.9em;
+	background-color: rgba(230, 245, 255, 0.3);
+	color: #000000;
+}
+
+table#developers .tablesorter-childRow td.plugin-name {
+	padding-left: 30px;
+}
+
+.pager {
+	margin-top: 5px;
+}
+
+.pager .disabled {
+	color: #8c8c8c;
+	pointer-events: none;
+	cursor: default;
+}
+
+.pager .next {
+	float: right;
+	margin-right: 5px;
+}
+
+.pager .pagesize {
+	display: none;
+}

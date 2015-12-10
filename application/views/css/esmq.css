@@ -1,0 +1,334 @@
+.esm-questionnaire-item {
+	margin-bottom: 5px;
+}
+
+.esm-questionnaire-item.option {
+	float: left;
+	width: 100px;
+}
+
+/* ESM questionnaire checkbox */
+
+
+.esmq-weekday input[type=checkbox] {
+	visibility: hidden;
+}
+
+.esmq-weekday {
+	width: 25px;
+	height: 22px;
+	background: #ffffff;
+	border: 2px solid #2489c5;
+	border-radius: 2px;
+	position: relative;
+	display: inline-block;
+}
+
+.esmq-weekday.invalid {
+	border: 2px solid red;
+}
+
+.esmq-weekday label {
+	cursor: pointer;
+	position: absolute;
+	/* width: 30px; */
+	/* height: 15px; */
+	left: 6px;
+	top: 3px;
+	color: #2489c5;
+	font-weight: bold;
+	/* text-align: -webkit-right; */
+}
+
+.esmq-weekday label:before {
+	content: '';
+}
+
+.esmq-weekday label:after {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+	filter: alpha(opacity=0);
+	opacity: 0;
+	content: '';
+	position: absolute;
+	background-color: #2489c5;
+	color: #ffffff;
+	width: 19px;
+	height: 19px;
+	left: -7px;
+	top: -3px;
+	padding-left: 7px;
+	padding-top: 3px;
+}
+
+.esmq-weekday input[type=checkbox]:checked + label:after {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	filter: alpha(opacity=100);
+	opacity: 1;
+}
+
+.esmq-days-mon + label:before, .esmq-days-mon + label:after {
+	content: "M";
+}
+
+.esmq-days-tue + label:before, .esmq-days-tue + label:after {
+	content: "T";
+}
+
+.esmq-days-wed + label:before, .esmq-days-wed + label:after {
+	content: "W";
+}
+
+.esmq-days-thu + label:before, .esmq-days-thu + label:after {
+	content: "T";
+}
+
+.esmq-days-fri + label:before, .esmq-days-fri + label:after {
+	content: "F";
+}
+
+.esmq-days-sat + label:before, .esmq-days-sat + label:after {
+	content: "S";
+}
+
+.esmq-days-sun + label:before, .esmq-days-sun + label:after {
+	content: "S";
+}
+
+/* ESM Questionnaire radiobutton */
+
+
+
+.radio label {  
+    display: inline-block;  
+    cursor: pointer;  
+    position: relative;  
+    padding-left: 25px;  
+    margin-right: 15px;  
+    font-size: 13px;  
+}  
+
+.radio input[type=radio] {  
+    display: none;  
+}  
+
+.radio label:before {  
+    content: "";  
+    display: inline-block;
+    width: 12px;  
+    height: 12px;  
+    margin-right: 10px;  
+    position: absolute;  
+    left: 0;  
+    bottombottom: 1px;  
+    background-color: #ffffff;
+    border: 2px solid #2489c5;
+}  
+
+.radio label:before {  
+    border-radius: 8px;  
+}  
+
+.radio input[type=radio]:checked + label:before {  
+    content: "\2022";  
+    color: #2489c5;
+    font-size: 32px;  
+    text-align: center;  
+    line-height: 12px;  
+}
+
+
+
+div.esmq-questions {
+	margin-top: 20px;
+	float: left;
+	
+	
+}
+
+div.esmq-question {
+	float: left;
+	clear: both;
+	width: 300px;
+	border: 2px solid #2489c5;
+	border-radius: 5px;
+	margin-bottom: 10px;
+}
+
+div.esmq-question-head {
+	border-bottom: 1px solid #2489c5;
+	background-color: #2489c5;
+}
+
+div.esmq-question-head-left {
+	width: 20px;
+	border-right: 1px solid #2489c5;
+	padding: 5px;
+	background-color: #2489c5;
+	color: white;
+	font-weight: bold;
+	display: inline-block;
+}
+
+div.esmq-question-head-right {
+	width: 20px;
+	border-right: 1px solid #2489c5;
+	padding: 5px;
+	background-color: #2489c5;
+	font-weight: bold;
+	display: inline-block;
+	float: right;
+	text-align: center;
+}
+
+div.esmq-question-head-right a {
+	color: white;
+}
+
+div.esmq-question-head-right a:hover {
+	text-decoration: underline;
+}
+
+div.esmq-question-body {
+	padding: 5px;
+	padding-bottom: 10px;
+}
+
+div.esmq-options {
+	float: left;
+	margin-bottom: 5px;
+}
+
+
+div.esmq-option {
+	float: left;
+	margin-bottom: 5px;
+}
+
+div.esmq-option-del, div.esmq-option-value, div.esmq-option-followup {
+	float: left;
+}
+
+div.esmq-option-del a {
+	margin-right: 5px;
+	font-size: 1.3em;
+	font-weight: bold;
+	color: #cc181e;
+}
+
+div.esmq-option-value {
+	margin-right: 10px;
+}
+
+div.esmq-option-value input {
+	width: 150px;
+}
+
+div.esmq-option-value.long input {
+	width: 230px;
+}
+
+div.esmq-option-followup input {
+	width: 30px;
+}
+
+
+div.esmq-option-add {
+	float: left;
+}
+
+div.esmq-option-add a {
+	margin-left: 5px;
+	font-size: 1.3em;
+	font-weight: bold;
+	color: #2489c5;
+}
+
+div.esmq-add-question {
+	float: left;
+	clear: both;
+}
+
+.input-field {
+	padding: 2px;
+    overflow: hidden;
+    position: relative;
+	resize: none;
+    border: 1px solid #aaa;
+    white-space: nowrap;
+    color: #444;
+    text-decoration: none;
+
+    border-radius: 4px;
+
+    background-clip: padding-box;
+
+    -webkit-touch-callout: none;
+      /*-webkit-user-select: none; safari sucks */
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+
+    background-color: #fff;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eee), color-stop(0.5, #fff));
+    background-image: -webkit-linear-gradient(center bottom, #eee 0%, #fff 50%);
+    background-image: -moz-linear-gradient(center bottom, #eee 0%, #fff 50%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#eeeeee', GradientType = 0);
+    background-image: linear-gradient(top, #fff 0%, #eee 50%);
+}
+
+.input-field.invalid {
+	border: 2px solid red;
+}
+
+.esm-questionnaire-item.radio label {
+	width: auto;
+}
+
+.esmq-info {
+	padding: 10px;
+}
+
+select.esmq-followup, select.esmq-question-type {
+	height: 25px;
+	font-family: inherit;
+	padding: 1px;
+	border: 1px solid #aaa;
+	color: #444;
+	text-decoration: none;
+	border-radius: 4px;
+	background-clip: padding-box;
+	/*-webkit-user-select: none; safari sucks */
+	-moz-user-select: none;
+	-ms-user-select: none;
+	background-color: #fff;
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #eee), color-stop(0.5, #fff));
+	background-image: -moz-linear-gradient(center bottom, #eee 0%, #fff 50%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#eeeeee', GradientType = 0);
+}
+
+select.esmq-question-type {
+	width: 170px;
+}
+
+.esm-questionnaire-item > select.esmq-followup {
+	width: 170px;
+}
+
+.esmq-amount {
+	/*width: 170px;*/
+	display: inline-block;
+	height: 19px;
+}
+
+.esmq-amount label {
+	position: absolute;
+	width: 20px;
+	margin-left: -10px;
+	text-align: center;
+	margin-top: 15px;
+	font-size: 0.8em;
+}
+
+#manage_esmq.disabled {
+	display: none;
+}

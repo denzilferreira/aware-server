@@ -1,0 +1,263 @@
+h1, h2{
+    color : white;
+    padding-left: 2%;
+}
+textarea {
+	resize:vertical;
+}
+.header {
+	padding: 14px 0;
+	background-color: rgb(19, 17, 17);
+	background-color: #006a3f;
+	background-image:	
+					radial-gradient(rgba(0,0,0,0.1) 15%, transparent 16%), 
+					radial-gradient(rgba(0,0,0,0.1) 15%, transparent 16%), 
+					radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%), 
+					radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%);
+	background-image:	
+					-webkit-radial-gradient(rgba(0,0,0,0.1) 15%, transparent 16%), 
+					-webkit-radial-gradient(rgba(0,0,0,0.1) 15%, transparent 16%), 
+					-webkit-radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%), 
+					-webkit-radial-gradient(rgba(255, 255, 255, 0.1) 15%, transparent 20%);
+    background-position: 0 0, 4px 4px, 0 1px, 4px 5px;
+    background-size: 8px 8px;
+	border-bottom: 5px solid white; /*41, 41, 41);*/
+}
+
+.free-wall {
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+	min-height: 100%;
+	max-width: calc(100%); /*remove 4px when removw borders*/
+	/*border: 1px solid black;*/
+}
+/*brick*/
+.created_label {
+	position: absolute;
+	bottom: 0;
+    left: 0;
+    background-color: white;
+}
+.closeButton {
+	background-image: url("..//images/visualization/fermer.png");
+	background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.refreshButton {
+	background-image: url("..//images/visualization/refresh-button.jpg");
+	background-size: 24px 24px;
+	background-repeat: no-repeat;
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.closeButton:hover{
+    background-image: url("..//images/visualization/Close.png");
+    width: 32px;
+    height: 32px;
+}
+.closeButton:active{
+   border-style: solid;
+}
+.publishButton {
+	background-image: url("..//images/visualization/private.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	position: absolute;
+    bottom : 0;
+    right: 0;
+	width: 48px;
+    height: 48px;
+}
+.publishButton.public{
+    background-image: url("..//images/visualization/group.png");
+    background-repeat: no-repeat;
+    background-size: contain;
+    bottom: 0;
+    right: 0;
+	width: 48px;
+	height: 48px;
+}
+.size30percent {
+	width: 530px;
+	height: 430px;
+}
+.waitingTag {
+	z-index: 99;
+    width: 100%;
+    height: 100%;
+}
+
+body, html {
+	height: 100%;
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+.brick {
+	background-color: white;
+	/*float: left;*/
+	cursor: pointer;
+	/*overflow: hidden;*/
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	border: 2px solid #5B9BD5;
+}
+/*dialog */
+.brick-dialog {
+	text-align: center;
+	/*border: 2px solid red;*/
+}
+.brick-dialog .img {
+	max-width: 100%;
+	max-height: 100%;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+}
+
+
+.leftButton {
+    position: absolute;
+    left: 20px;
+}
+.showScript{
+	position: absolute;
+	left: 90px
+}
+.comment {
+	width: 80%;
+	min-height: 15%;
+	overflow-x: auto;
+}
+#circularG{
+position:relative;
+margin-top: 100px;
+width:128px;
+height:128px}
+
+.circularG{
+position:absolute;
+background-color:#6298F5;
+width:29px;
+height:29px;
+-moz-border-radius:19px;
+-moz-animation-name:bounce_circularG;
+-moz-animation-duration:1.36s;
+-moz-animation-iteration-count:infinite;
+-moz-animation-direction:normal;
+-webkit-border-radius:19px;
+-webkit-animation-name:bounce_circularG;
+-webkit-animation-duration:1.36s;
+-webkit-animation-iteration-count:infinite;
+-webkit-animation-direction:normal;
+-ms-border-radius:19px;
+-ms-animation-name:bounce_circularG;
+-ms-animation-duration:1.36s;
+-ms-animation-iteration-count:infinite;
+-ms-animation-direction:normal;
+}
+
+#circularG_1{
+left:0;
+top:50px;
+-moz-animation-delay:0.51s;
+-webkit-animation-delay:0.51s;
+-ms-animation-delay:0.51s;
+}
+
+#circularG_2{
+left:14px;
+top:14px;
+-moz-animation-delay:0.68s;
+-webkit-animation-delay:0.68s;
+-ms-animation-delay:0.68s;
+}
+
+#circularG_3{
+top:0;
+left:50px;
+-moz-animation-delay:0.85s;
+-webkit-animation-delay:0.85s;
+-ms-animation-delay:0.85s;
+}
+
+#circularG_4{
+right:14px;
+top:14px;
+-moz-animation-delay:1.02s;
+-webkit-animation-delay:1.02s;
+-ms-animation-delay:1.02s;
+}
+
+#circularG_5{
+right:0;
+top:50px;
+-moz-animation-delay:1.19s;
+-webkit-animation-delay:1.19s;
+-ms-animation-delay:1.19s;
+}
+
+#circularG_6{
+right:14px;
+bottom:14px;
+-moz-animation-delay:1.36s;
+-webkit-animation-delay:1.36s;
+-ms-animation-delay:1.36s;
+}
+
+#circularG_7{
+left:50px;
+bottom:0;
+-moz-animation-delay:1.53s;
+-webkit-animation-delay:1.53s;
+-ms-animation-delay:1.53s;
+}
+
+#circularG_8{
+left:14px;
+bottom:14px;
+-moz-animation-delay:1.7s;
+-webkit-animation-delay:1.7s;
+-ms-animation-delay:1.7s;
+}
+
+@-moz-keyframes bounce_circularG{
+0%{
+-moz-transform:scale(1)}
+
+100%{
+-moz-transform:scale(.3)}
+
+}
+
+@-webkit-keyframes bounce_circularG{
+0%{
+-webkit-transform:scale(1)}
+
+100%{
+-webkit-transform:scale(.3)}
+
+}
+
+@-ms-keyframes bounce_circularG{
+0%{
+-ms-transform:scale(1)}
+
+100%{
+-ms-transform:scale(.3)}
+
+}
+/*
+PowerPoint blue hex color value:
+#5B9BD5
+*/

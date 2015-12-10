@@ -1,0 +1,18 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
+
+ERROR - 2015-08-05 09:42:04 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:04 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:04 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:04 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:05 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:05 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:31 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:31 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:31 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:31 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:32 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:32 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:33 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 09:42:33 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 10:49:20 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
+ERROR - 2015-08-05 10:49:20 --> Severity: 8192  --> mysql_escape_string(): This function is deprecated; use mysql_real_escape_string() instead. /Applications/MAMP/htdocs/system/database/drivers/mysqli/mysqli_driver.php 320
