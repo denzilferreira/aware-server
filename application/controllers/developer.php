@@ -366,43 +366,64 @@ class Developer extends CI_Controller {
 				$this->Developer_model->insert_plugin_data($data);
 				
 				// upload files
-				if (!file_exists('/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/')) {
-					mkdir('/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/', 0777, true);
+				if (!file_exists('./uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/')) {
+					mkdir('./uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/', 0777, true);
 				}
 				$file_data = array();
-				$config['upload_path'] = '/uploads/' . md5($this->session->userdata('google_id')) .'/'.$plugin_id.'/';
-				$config['allowed_types'] = 'apk|gif|png|jpg';
+				$config['upload_path'] = './uploads/' . md5($this->session->userdata('google_id')) .'/'.$plugin_id.'/';
+				$config['allowed_types'] = '*';
 				$config['max_size']	= '204800'; // 200Mb
 				$config['max_width']  = '1920';
 				$config['max_height']  = '1920';
 				$config['overwrite'] = TRUE;
 				$this->load->library('upload', $config);
-				
+
+                $filedata = array();
+
 				if ($del_package) {
 					$this->Developer_model->remove_package($plugin_id);
-				}
-				
-				else {
-					
-					if ( ! $this->upload->do_upload("plugin_package"))
-					{
+				} else {
+					if ( ! $this->upload->do_upload("plugin_package")) {
 						$file_data1 = $this->upload->display_errors();
-					}
-					
-					else
-					{
+					} else {
 						$file_data1 = $this->upload->data();
-					} 
-					
+                        
+                        $filedata['package_path'] = '/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/';
+						$filedata['package_name'] = $file_data1['file_name'];
+						$filedata['lastupdate'] = time();
+
+						$this->load->library('apkparser');
+						
+						$manifest = $this->apkparser->getManifest( $filedata['package_path'] . $filedata['package_name'] );
+						if ($manifest !== "ManifestError") {
+							$filedata['version'] = $this->apkparser->getVersion($manifest);
+						}
+						
+						$tempstr = $this->apkparser->getPermissionsPackage( $filedata['package_path'] . $filedata['package_name'] );
+						
+						if ($tempstr !== "PermissionError") {
+							$permissions = $tempstr[0];
+							$filedata['package'] = $tempstr[1];
+							$i = 0;
+							$permission_array = array();
+							foreach ($permissions as $permission) {
+								array_push($permission_array, array('permission' => $permission, 'plugin_id' => $plugin_id));
+								$i++;
+							}
+							$this->Developer_model->insert_filedata($filedata, $plugin_id, $permission_array);
+						}
+						else {
+							$filedata['package'] = "Error extracting from AndroidManifest.xml";
+							$this->Developer_model->insert_filedata($filedata, $plugin_id, array());
+						}
+					}
 				}
 				
 
 				if ($del_icon) {
 					$this->Developer_model->remove_icon($plugin_id);
 					$filedata['iconpath'] = '/uploads/empty_icon.png';
-				}
-				
-				else {
+				} else {
 					$this->load->library('upload', $config);
 					
 					if ( ! $this->upload->do_upload("plugin_icon"))
@@ -926,12 +947,12 @@ class Developer extends CI_Controller {
 				$this->Developer_model->insert_plugin_data($data);
 
 				// upload files
-				if (!file_exists('/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/')) {
-					mkdir('/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/', 0777, true);
+				if (!file_exists('./uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/')) {
+					mkdir('./uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/', 0777, true);
 				}
 				$file_data = array();
-				$config['upload_path'] = '/uploads/' . md5($this->session->userdata('google_id')) .'/'.$plugin_id.'/';
-				$config['allowed_types'] = 'apk|gif|jpg|png';
+				$config['upload_path'] = './uploads/' . md5($this->session->userdata('google_id')) .'/'.$plugin_id.'/';
+				$config['allowed_types'] = '*';
 				$config['max_size']	= '204800'; // 200Mb
 				$config['max_width']  = '1920';
 				$config['max_height']  = '1920';
@@ -944,13 +965,10 @@ class Developer extends CI_Controller {
 					$this->Developer_model->remove_package($plugin_id);
 				}
 				else {
-					if ( ! $this->upload->do_upload("plugin_package"))
-					{
+					if ( ! $this->upload->do_upload("plugin_package")) {
 						$file_data1 = $this->upload->display_errors();
-					}
-					
-					else
-					{
+                        echo var_dump($file_data1);
+					} else {
 						$file_data1 = $this->upload->data();
 						$filedata['package_path'] = '/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/';
 						$filedata['package_name'] = $file_data1['file_name'];
@@ -958,12 +976,12 @@ class Developer extends CI_Controller {
 
 						$this->load->library('apkparser');
 						
-						$manifest = $this->apkparser->getManifest($filedata['package_path'] .'/'. $filedata['package_name']);
+						$manifest = $this->apkparser->getManifest( $filedata['package_path'] . $filedata['package_name'] );
 						if ($manifest !== "ManifestError") {
 							$filedata['version'] = $this->apkparser->getVersion($manifest);
 						}
 						
-						$tempstr = $this->apkparser->getPermissionsPackage($filedata['package_path'] .'/'. $filedata['package_name']);
+						$tempstr = $this->apkparser->getPermissionsPackage( $filedata['package_path'] . $filedata['package_name'] );
 						
 						if ($tempstr !== "PermissionError") {
 							$permissions = $tempstr[0];
@@ -980,17 +998,14 @@ class Developer extends CI_Controller {
 							$filedata['package'] = "Error extracting from AndroidManifest.xml";
 							$this->Developer_model->insert_filedata($filedata, $plugin_id, array());
 						}
-						
-					} 
+					}
 				}
 				
 
 				if ($del_icon) {
 					$this->Developer_model->remove_icon($plugin_id);
 					$filedata['iconpath'] = '/uploads/empty_icon.png';
-				}
-				
-				else {
+				} else {
 					if  (!$this->upload->do_upload("plugin_icon"))
 					{
 						if (!($_POST["upload_icon_text"]) == "not_removed") {
@@ -999,18 +1014,14 @@ class Developer extends CI_Controller {
 							$filedata['lastupdate'] = time();
 							$this->Developer_model->insert_filedata($filedata, $plugin_id, array());
 						}
-					}
-					else
-					{
+					} else {
 						$file_data2 = $this->upload->data();
 						$filedata['iconpath'] = '/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/'.$file_data2['file_name'];
 						$filedata['lastupdate'] = time();
 						$this->Developer_model->insert_filedata($filedata, $plugin_id, array());
 					}
-				}			
-
+				}
 				$this->plugin($plugin_id);
-				
 		}
 		
 		// just opened the edit-view

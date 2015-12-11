@@ -12,14 +12,12 @@ class Apkparser {
 	}
 	
 	function getManifest($filepath) {
-		$string = shell_exec('./aapt d badging ' . $filepath .' | grep package');
+        $string = shell_exec('aapt d badging ' . getcwd().$filepath .' | grep package');
 		if (!empty($string)) {
 			return $string;
-		}
-		else {
+		} else {
 			return "ManifestError";
 		}
-	
 	}
 	
 	function getVersion($manifest) {
@@ -27,15 +25,13 @@ class Apkparser {
 		if (isset($version[1])) {	
 			$version = explode("'",$version[1]);
 			return $version[1];
-			
 		} else {
 			return 0;
 		}
 	}
 	
 	function getPermissionsPackage($filepath) {
-		$permissions = shell_exec("./aapt dump permissions ". $filepath);
-
+		$permissions = shell_exec('aapt dump permissions '. getcwd().$filepath );
 		if (!is_null($permissions)) {
 			$permissions = explode("permission:", $permissions);
 		
@@ -52,10 +48,8 @@ class Apkparser {
 			array_shift($permissions);
 			
 			return array($permissions, $package_name);
-		}
-		else {
+		} else {
 			return "PermissionError";
 		}
-	
 	}
 }

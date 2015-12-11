@@ -69,7 +69,7 @@ echo "
 	";
 
 	if ($plugin_data['package_path'] !== "") {
-		echo "<div class='plugin_values'><a href='".$plugin_data['package_path'].$plugin_data['package_name']."'>".$plugin_data['package_name']."</a></div>";
+		echo "<div class='plugin_values'><a href='".base_url().$plugin_data['package_path'].$plugin_data['package_name']."'>".$plugin_data['package_name']."</a></div>";
 	}
 	else {
 		echo "<div class='plugin_values'>Package not set!</div>";
