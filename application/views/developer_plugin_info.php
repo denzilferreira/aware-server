@@ -10,7 +10,7 @@ $delete_img_properties = array(
 $type = $plugin_data['type']==0 ? 'Plugin':'Sensor';
 
 if ($plugin_data['iconpath'] !== "" || !empty($plugin_data['iconpath'])) {
-	echo "<div class='icon'><img src='https://api.awareframework.com/".$plugin_data['iconpath']."' height='130' width='130'></div>";
+	echo "<div class='icon'><img src='" . base_url() . $plugin_data['iconpath'] . "' height='130' width='130'></div>";
 }
 echo "
 	<div id='" . $plugin_data['id']. "' class='plugin_id' 'style='display: none;'></div><div class='pluginname'><h1>". $plugin_data['title'] ."</h1>

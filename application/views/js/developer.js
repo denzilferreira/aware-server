@@ -12,8 +12,8 @@ jQuery(document).ready(function(){
 	}
 	);
 	
-	var url = window.location.protocol+'//'+window.location.host+'/';
-	var addimg = '<img src="'+url+'application/views/images/developer/add.png" title="Add new" class="add_image" height="24" alt="">';
+	var url = document.base_url;
+    var addimg = '<img src="'+url+'application/views/images/developer/add.png" title="Add new" class="add_image" height="24" alt="">';
 	var removeimg = '<img src="'+url+'application/views/images/delete_icon.png" title="Remove" class="remove_image" height="12" alt="">';
 	var extraimg = '<img src="'+url+'application/views/images/developer/new_extra.png" title="Add a new extra to a broadcast" class="addextra_image" height="24" alt="">';
 	var newsettingcount = 1;

@@ -12,7 +12,7 @@ class Apkparser {
 	}
 	
 	function getManifest($filepath) {
-		$string = shell_exec('/var/www/dashboard/aapt d badging /var/www/dashboard/' . $filepath .' | grep package');
+		$string = shell_exec('./aapt d badging ' . $filepath .' | grep package');
 		if (!empty($string)) {
 			return $string;
 		}
@@ -34,7 +34,7 @@ class Apkparser {
 	}
 	
 	function getPermissionsPackage($filepath) {
-		$permissions = shell_exec("/var/www/dashboard/aapt dump permissions /var/www/dashboard/" . $filepath);
+		$permissions = shell_exec("./aapt dump permissions ". $filepath);
 
 		if (!is_null($permissions)) {
 			$permissions = explode("permission:", $permissions);

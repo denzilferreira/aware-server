@@ -213,11 +213,11 @@ function getDevices(){
 				'<td class="device-id">' + data[i]['device_id'] + '</td>'+
 				'<td class="device-label"><input type="text" class="label_box" readonly value="' + (data[i]['label'] == null ? '' : data[i]['label']) + '">'+
 				'<div class="label-buttons">'+
-				'<a href="#" class="edit-description" title="Edit device label"><img src="/application/views/images/edit.png" alt="Edit" height="11" width="11" class="edit_image"></a>'+
-				'<a href="#" class="cancel-button save_cancel" title="Cancel changes"><img src="/application/views/images/delete_icon.png" alt="Cancel" height="11" width="11" class="del_image"></a>'+
-				'<a href="#" class="save-button save_cancel" title="Save changes"><img src="/application/views/images/ok.png" alt="Save" height="13" width="13" class="ok_image"></a>' +
+				'<a href="#" class="edit-description" title="Edit device label"><img src="'+document.base_url+'/application/views/images/edit.png" alt="Edit" height="11" width="11" class="edit_image"></a>'+
+				'<a href="#" class="cancel-button save_cancel" title="Cancel changes"><img src="'+document.base_url+'/application/views/images/delete_icon.png" alt="Cancel" height="11" width="11" class="del_image"></a>'+
+				'<a href="#" class="save-button save_cancel" title="Save changes"><img src="'+document.base_url+'/application/views/images/ok.png" alt="Save" height="13" width="13" class="ok_image"></a>' +
 				'</div>'+
-				'<div class="remove-device"><a href="#" class="cancel-button" title="Remove device"><img src="/application/views/images/delete_icon.png" alt="Cancel" height="11" width="11" class="del_image"></a></div>'+
+				'<div class="remove-device"><a href="#" class="cancel-button" title="Remove device"><img src="'+document.base_url+'/application/views/images/delete_icon.png" alt="Cancel" height="11" width="11" class="del_image"></a></div>'+
 				'</td>'+
 				'</tr>');
 
@@ -824,7 +824,7 @@ $(document).ready(function(){
 		var el = $(this);
 		getDevices();
 		$('#study-devices .sort_arrow').remove();
-		$('<img src="/application/views/images/'+order_by_type+'.png" height="10" width="10" style="margin-right:5px;" class="sort_arrow">').hide().prependTo(el).fadeIn(500);
+		$('<img src="'+document.base_url+'/application/views/images/'+order_by_type+'.png" height="10" width="10" style="margin-right:5px;" class="sort_arrow">').hide().prependTo(el).fadeIn(500);
 	});
 	
 	// Sorting device list by device label
@@ -836,7 +836,7 @@ $(document).ready(function(){
 		var el = $(this);
 		getDevices();
 		$('#study-devices .sort_arrow').remove();
-		$('<img src="/application/views/images/'+order_by_type+'.png" height="10" width="10" style="margin-right:5px;" class="sort_arrow">').hide().prependTo(el).fadeIn(500);
+		$('<img src="'+document.base_url+'/application/views/images/'+order_by_type+'.png" height="10" width="10" style="margin-right:5px;" class="sort_arrow">').hide().prependTo(el).fadeIn(500);
 	});
 	
 	var last_search;
@@ -1158,7 +1158,7 @@ $(document).ready(function(){
 					var type = obj["esm"]["esm_type"];
 					var title = obj["esm"]["esm_title"];
 					var esm_type = {1: "Free text", 2: "Radio", 3: "Checkbox", 4: "Likert", 5: "Quick answer", 6: "Scale"};
-					$("table#esm-queue tbody").append("<tr class='esm-queue-message'><td class='esm-queue-message-type'>" + esm_type[type] + "</td><td class='esm-queue-message-title' title='" + title + "'>" + title + "</td><td class='esm-queue-message-data'>" + data + "</td><td class='esm-queue-message-remove'><img src='/application/views/images/delete_icon.png' alt='Remove' height='11' width='11' class='del_image'></td></tr>");
+					$("table#esm-queue tbody").append("<tr class='esm-queue-message'><td class='esm-queue-message-type'>" + esm_type[type] + "</td><td class='esm-queue-message-title' title='" + title + "'>" + title + "</td><td class='esm-queue-message-data'>" + data + "</td><td class='esm-queue-message-remove'><img src='"+document.base_url+"/application/views/images/delete_icon.png' alt='Remove' height='11' width='11' class='del_image'></td></tr>");
 					
 					$('.esm-queue-message-remove').bind("click", function() {
 						$(this).parent().remove();

@@ -17,6 +17,9 @@
 <script type="text/javascript" src="<?php echo base_url();?>application/views/js/jquery.tablesorter.pager.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>application/views/js/jquery.filtertable.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>application/views/js/jquery.cookie.js"></script>
+<script type="text/javascript">
+    document.base_url = '<?php echo base_url(); ?>';
+</script>
 <?php echo $template['metadata']; ?>
 </head>
 <body>

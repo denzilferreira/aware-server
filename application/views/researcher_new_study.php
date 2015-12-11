@@ -47,7 +47,7 @@ Please fill in all the fields. Notice that you cannot edit the study name after 
 	
 		<?php
 			$host_types = array(
-							'aware' => 'Aware server',
+							'aware' => 'This server',
 							'remote' => 'Remote server',
 						);
 			$host_selected = $this->session->flashdata('host-type') ? $this->session->flashdata('host-type') : 'aware';
@@ -58,7 +58,7 @@ Please fill in all the fields. Notice that you cannot edit the study name after 
 		<div id="db-choices">
 	
 			<div class="db-choice aware">
-				<p>Study data will be hosted on Aware Framework's server.</p>
+				<p>Study data will be hosted on this server.</p>
 			</div>
 			
 			<div class="db-choice remote">

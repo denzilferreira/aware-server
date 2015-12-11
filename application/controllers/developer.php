@@ -19,7 +19,7 @@ class Developer extends CI_Controller {
 		} else {
 			$data = array('plugins_topics' => $this->Developer_model->get_developer_plugins($this->session->userdata('id')));
 			$this->template->append_metadata("<script src='" . base_url() . "application/views/js/tablesorter.developer-plugins.min.js'></script>");
-			$this->template->append_metadata("<script src='" . base_url() . "application/views/js/developer.min.js'></script>");
+			$this->template->append_metadata("<script src='" . base_url() . "application/views/js/developer.js'></script>");
 			$this->template->build('developer', $data);
 		}
 	}
@@ -366,11 +366,11 @@ class Developer extends CI_Controller {
 				$this->Developer_model->insert_plugin_data($data);
 				
 				// upload files
-				if (!file_exists('./uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/')) {
-					mkdir('./uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/', 0777, true);
+				if (!file_exists('/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/')) {
+					mkdir('/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/', 0777, true);
 				}
 				$file_data = array();
-				$config['upload_path'] = './uploads/' . md5($this->session->userdata('google_id')) .'/'.$plugin_id.'/';
+				$config['upload_path'] = '/uploads/' . md5($this->session->userdata('google_id')) .'/'.$plugin_id.'/';
 				$config['allowed_types'] = 'apk|gif|png|jpg';
 				$config['max_size']	= '204800'; // 200Mb
 				$config['max_width']  = '1920';
@@ -428,7 +428,7 @@ class Developer extends CI_Controller {
 			}
 			
 			else {
-				$this->template->append_metadata("<script src='" . base_url() . "application/views/js/developer.min.js'></script>");
+				$this->template->append_metadata("<script src='" . base_url() . "application/views/js/developer.js'></script>");
 				$this->template->build('developer_edit_plugin', 
 				array(
 					'manager' => $this->session->userdata('manager'),
@@ -531,7 +531,7 @@ class Developer extends CI_Controller {
 		}
 		if ($submit == "success") {
 		
-			// new upload shit here
+			// new upload 
 				// if form submitted with no errors, upload data to database
 				//$this->output->enable_profiler(TRUE);
 				
@@ -925,13 +925,12 @@ class Developer extends CI_Controller {
 
 				$this->Developer_model->insert_plugin_data($data);
 
-				
 				// upload files
-				if (!file_exists('/var/www/html/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/')) {
-					mkdir('/var/www/html/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/', 0777, true);
+				if (!file_exists('/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/')) {
+					mkdir('/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/', 0777, true);
 				}
 				$file_data = array();
-				$config['upload_path'] = '/var/www/html/uploads/' . md5($this->session->userdata('google_id')) .'/'.$plugin_id.'/';
+				$config['upload_path'] = '/uploads/' . md5($this->session->userdata('google_id')) .'/'.$plugin_id.'/';
 				$config['allowed_types'] = 'apk|gif|jpg|png';
 				$config['max_size']	= '204800'; // 200Mb
 				$config['max_width']  = '1920';
@@ -1027,7 +1026,7 @@ class Developer extends CI_Controller {
 						redirect(base_url('index.php/error/'));
 					}
 				else {
-					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/developer.min.js'></script>");
+					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/developer.js'></script>");
 					$settings = $this->Developer_model->get_settings($plugin_id);
 					$broadcasts = $this->Developer_model->get_broadcasts($plugin_id);
 					$broadcastid = array();

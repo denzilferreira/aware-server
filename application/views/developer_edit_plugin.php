@@ -1,7 +1,7 @@
 <?php
 
  $add_img_properties = array(
-          'src' => 'application/views/images/developer/add.png',
+          'src' => base_url().'application/views/images/developer/add.png',
           'title' => 'Add new',
           'class' => 'add_image',
           //'width' => '45',
@@ -9,14 +9,14 @@
 );
 
 $remove_img_properties = array(
-		  'src' => 'application/views/images/delete_icon.png',
+		  'src' => base_url().'application/views/images/delete_icon.png',
           'title' => 'Remove',
           'class' => 'remove_image',
           'height' => '12'
 );
 
 $addextra_img_properties = array(
-          'src' => 'application/views/images/developer/new_extra.png',
+          'src' => base_url().'application/views/images/developer/new_extra.png',
           'title' => 'Add a new extra to a broadcast',
           'class' => 'addextra_image',
           //'width' => '64',
