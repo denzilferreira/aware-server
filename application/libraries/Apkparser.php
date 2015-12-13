@@ -2,54 +2,29 @@
 
 class Apkparser {
 	
-	private $manifest;
-	private $version;
-	private $package_name;
-	private $permissions;
-	
-	function __construct(){
-		//do nothing by default
+    function __construct(){}
+    
+	function getPackage($filepath) {
+        $package_name = exec(getcwd()."/aapt d badging " . getcwd().$filepath . " | grep package");
+        preg_match("/ name='([a-z0-9.]*)'/", $package_name, $matches);
+        return $matches[1];
 	}
 	
-	function getManifest($filepath) {
-        $string = shell_exec('aapt d badging ' . getcwd().$filepath .' | grep package');
-		if (!empty($string)) {
-			return $string;
-		} else {
-			return "ManifestError";
-		}
+	function getVersion($filepath) {
+		$version = exec(getcwd()."/aapt d badging " . getcwd().$filepath . " | grep versionCode");
+        preg_match("/versionCode='([0-9]*)'/", $version, $matches);
+        return $matches[1];
 	}
 	
-	function getVersion($manifest) {
-		$version = explode("versionCode", $manifest);
-		if (isset($version[1])) {	
-			$version = explode("'",$version[1]);
-			return $version[1];
-		} else {
-			return 0;
-		}
-	}
-	
-	function getPermissionsPackage($filepath) {
-		$permissions = shell_exec('aapt dump permissions '. getcwd().$filepath );
-		if (!is_null($permissions)) {
-			$permissions = explode("permission:", $permissions);
-		
-			$i=0;
-			while ($i < sizeof($permissions)) {
-				$tempstr = explode("uses-", $permissions[$i]);
-				$permissions[$i] = trim($tempstr[0]);
-				$i++;
-			}
-			trim($permissions[0]);
-			$package_name = explode("package: ", $permissions[0]);
-			$package_name=$package_name[1];
-			
-			array_shift($permissions);
-			
-			return array($permissions, $package_name);
-		} else {
-			return "PermissionError";
-		}
+	function getPermissions($filepath) {
+        exec(getcwd()."/aapt dump permissions " . getcwd().$filepath . " | grep uses-permission", $permissions );
+        $perms = array();
+        if( count($permissions) > 0 ) {
+          foreach( $permissions as $perm ) {
+              preg_match("/ name='([a-zA-Z0-9_.]*)'/", $perm, $matches);
+              $perms[] = $matches[1];
+          }
+        }
+        return $perms;
 	}
 }

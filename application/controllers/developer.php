@@ -6,9 +6,6 @@ class Developer extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 		
-		// Build submenu
-		//$this->template->set_partial('submenu', 'submenus/developer');
-
 		$this->load->model('Developer_model');
 		$this->template->append_metadata("<link rel='stylesheet' type='text/css' href='" . base_url() . "application/views/css/developer.css'/>");
 	}
@@ -32,16 +29,6 @@ class Developer extends CI_Controller {
 			//if the user clicked save changes
 			if ($attr == "success") {
 				
-				// new upload stuff here
-				// if form submitted with no errors, upload data to database
-				//$this->output->enable_profiler(TRUE);
-				
-				// prepare variables for different types of data
-
-				// these arrays used for update-statements
-				// the index for the values of each row is the same in all arrays
-				// setting information for first row is in $data_settings_ids[0], $data_settings[0] and $data_settings_descs[0]
-				// etc..
 				$data_settings_ids = array();
 				$data_settings_types = array();
 				$data_settings = array();
@@ -394,28 +381,15 @@ class Developer extends CI_Controller {
 
 						$this->load->library('apkparser');
 						
-						$manifest = $this->apkparser->getManifest( $filedata['package_path'] . $filedata['package_name'] );
-						if ($manifest !== "ManifestError") {
-							$filedata['version'] = $this->apkparser->getVersion($manifest);
-						}
-						
-						$tempstr = $this->apkparser->getPermissionsPackage( $filedata['package_path'] . $filedata['package_name'] );
-						
-						if ($tempstr !== "PermissionError") {
-							$permissions = $tempstr[0];
-							$filedata['package'] = $tempstr[1];
-							$i = 0;
-							$permission_array = array();
-							foreach ($permissions as $permission) {
-								array_push($permission_array, array('permission' => $permission, 'plugin_id' => $plugin_id));
-								$i++;
-							}
-							$this->Developer_model->insert_filedata($filedata, $plugin_id, $permission_array);
-						}
-						else {
-							$filedata['package'] = "Error extracting from AndroidManifest.xml";
-							$this->Developer_model->insert_filedata($filedata, $plugin_id, array());
-						}
+                        $filedata['package'] = $this->apkparser->getPackage($filedata['package_path'] . $filedata['package_name']);
+                        $filedata['version'] = $this->apkparser->getVersion($filedata['package_path'] . $filedata['package_name']);
+						$permissions = $this->apkparser->getPermissions( $filedata['package_path'] . $filedata['package_name'] );
+                        
+                        $permission_array = array();
+                        foreach ($permissions as $permission ) {
+                            array_push($permission_array, array('permission' => $permission, 'plugin_id' => $plugin_id));    
+                        }
+                        $this->Developer_model->insert_filedata($filedata, $plugin_id, $permission_array);
 					}
 				}
 				
@@ -533,17 +507,10 @@ class Developer extends CI_Controller {
 		$plugin_data = $this->Developer_model->get_plugin_data($plugin_id);
 
 		if ( $this->session->userdata('id') == $plugin_data['creator_id'] || $this->session->userdata('manager')) { 
-			// remove all
-
 			$this->Developer_model->remove_plugin($plugin_id, $plugin_data);
-
-			// remove icon and files
-			exec(escapeshellarg('rm -rf /uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id));
-		
+			exec(escapeshellarg('rm -rf /uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id));		
 		}
-
 		redirect('developer');
-
 	}
 
 	public function edit_plugin($submit, $plugin_id) {
@@ -551,18 +518,6 @@ class Developer extends CI_Controller {
 			redirect('dashboard');
 		}
 		if ($submit == "success") {
-		
-			// new upload 
-				// if form submitted with no errors, upload data to database
-				//$this->output->enable_profiler(TRUE);
-				
-				// prepare variables for different types of data
-
-				// these arrays used for update-statements
-				// the index for the values of each row is the same in all arrays
-				// setting information for first row is in $data_settings_ids[0], $data_settings[0] and $data_settings_descs[0]
-				// etc..
-				// settings
 				$data_settings_ids = array();
 				$data_settings_types = array();
 				$data_settings = array();
@@ -630,8 +585,8 @@ class Developer extends CI_Controller {
 				foreach ( $_POST as $key => $value )
 				{
 					$data[$key] = $this->input->post($key, true);
-					//var_dump($key . '=' .$value);
-					// split key into id:field:id type triplet
+					
+                    // split key into id:field:id type triplet
 					$tempstr = explode(':', $key);
 					if (!array_key_exists(1,$tempstr)) {
 						$tempstr[1] = "nothing to see here";
@@ -639,17 +594,6 @@ class Developer extends CI_Controller {
 					if (!array_key_exists(2,$tempstr)) {
 						$tempstr[2] = "nothing to see here";
 					}
-					/*
-					if (array_key_exists(0, $tempstr)) {
-						array_push($tempstrs, "tempstr0: ". $tempstr[0]);
-					}
-					if (array_key_exists(1, $tempstr)) {
-						array_push($tempstrs, "tempstr1: ".$tempstr[1]);
-					}
-					if (array_key_exists(2, $tempstr)) {
-						array_push($tempstrs, "tempstr2: ".$tempstr[2]);
-					}
-					*/
 					$value = htmlspecialchars($value);
 					if ($value !== "this_field_was_removed") {
 						if($key == "upload_file_text" and $value == "") {
@@ -833,7 +777,6 @@ class Developer extends CI_Controller {
 					
 					// add to delete_arrays if user removed the field
 					else {
-						
 						if($tempstr[1] == "plugin_setting" AND $value == "this_field_was_removed") {
 							array_push($delete_settings, $tempstr[0]);
 							array_push($tempstrs, "delete setting: ".$tempstr[0]);
@@ -963,11 +906,9 @@ class Developer extends CI_Controller {
 
 				if ($del_package) {
 					$this->Developer_model->remove_package($plugin_id);
-				}
-				else {
+				} else {
 					if ( ! $this->upload->do_upload("plugin_package")) {
 						$file_data1 = $this->upload->display_errors();
-                        echo var_dump($file_data1);
 					} else {
 						$file_data1 = $this->upload->data();
 						$filedata['package_path'] = '/uploads/'.md5($this->session->userdata('google_id')).'/'.$plugin_id.'/';
@@ -976,31 +917,17 @@ class Developer extends CI_Controller {
 
 						$this->load->library('apkparser');
 						
-						$manifest = $this->apkparser->getManifest( $filedata['package_path'] . $filedata['package_name'] );
-						if ($manifest !== "ManifestError") {
-							$filedata['version'] = $this->apkparser->getVersion($manifest);
-						}
-						
-						$tempstr = $this->apkparser->getPermissionsPackage( $filedata['package_path'] . $filedata['package_name'] );
-						
-						if ($tempstr !== "PermissionError") {
-							$permissions = $tempstr[0];
-							$filedata['package'] = $tempstr[1];
-							$i = 0;
-							$permission_array = array();
-							foreach ($permissions as $permission) {
-								array_push($permission_array, array('permission' => $permission, 'plugin_id' => $plugin_id));
-								$i++;
-							}
-							$this->Developer_model->insert_filedata($filedata, $plugin_id, $permission_array);
-						}
-						else {
-							$filedata['package'] = "Error extracting from AndroidManifest.xml";
-							$this->Developer_model->insert_filedata($filedata, $plugin_id, array());
-						}
+						$filedata['package'] = $this->apkparser->getPackage($filedata['package_path'] . $filedata['package_name']);
+                        $filedata['version'] = $this->apkparser->getVersion($filedata['package_path'] . $filedata['package_name']);
+						$permissions = $this->apkparser->getPermissions( $filedata['package_path'] . $filedata['package_name'] );
+                        
+                        $permission_array = array();
+                        foreach ($permissions as $permission ) {
+                            array_push($permission_array, array('permission' => $permission, 'plugin_id' => $plugin_id));
+                        }
+                        $this->Developer_model->insert_filedata($filedata, $plugin_id, $permission_array);
 					}
 				}
-				
 
 				if ($del_icon) {
 					$this->Developer_model->remove_icon($plugin_id);
@@ -1035,45 +962,43 @@ class Developer extends CI_Controller {
 			if ($this->session->userdata('id') == $plugin_data['creator_id'] || ($this->session->userdata('manager'))) { 
 				if (empty($plugin_data) && $plugin_id != 0) {
 						redirect(base_url('index.php/error/'));
-					}
-				else {
-					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/developer.js'></script>");
-					$settings = $this->Developer_model->get_settings($plugin_id);
-					$broadcasts = $this->Developer_model->get_broadcasts($plugin_id);
-					$broadcastid = array();
-					foreach ($broadcasts as $bc) {
-						array_push($broadcastid, $bc['id']);
-					}
-					if(!empty($broadcasts)) {
-						$broadcastextras = $this->Developer_model->get_broadcastextras($broadcastid);
-					}
-					else $broadcastextras = NULL;
-					$context_providersIDs = $this->Developer_model->get_context_providersIDs($plugin_id);
-					if (!empty($context_providersIDs)) {
-						$cpIDs = array();
-						foreach ($context_providersIDs as $context_provider_id) {
-							array_push($cpIDs, $context_provider_id['table_id']);
-						}
-						$tables = $this->Developer_model->get_tables($cpIDs);
-					}
-					else $tables = NULL; $cpIDs = NULL;
-					$tablefields = $this->Developer_model->get_table_field($cpIDs);
-					$data = array(
-						'plugin_data' => $plugin_data,
-						'settings' => $settings,
-						'broadcasts' => $broadcasts,
-						'broadcastextras' => $broadcastextras,
-						'tables' => $tables,
-						'tablefields' => $tablefields,
-						'manager' => $this->session->userdata('manager'),
-						'create_new' => 0,
-						'iconpath' => "",
-						'package_path' => ""
-						);
-					$this->template->build('developer_edit_plugin',$data);
-				}
-			}
-				else { 
+					} else {
+                        $this->template->append_metadata("<script src='" . base_url() . "application/views/js/developer.js'></script>");
+                        $settings = $this->Developer_model->get_settings($plugin_id);
+                        $broadcasts = $this->Developer_model->get_broadcasts($plugin_id);
+                        $broadcastid = array();
+                        foreach ($broadcasts as $bc) {
+                            array_push($broadcastid, $bc['id']);
+                        }
+                        if(!empty($broadcasts)) {
+                            $broadcastextras = $this->Developer_model->get_broadcastextras($broadcastid);
+                        }
+                        else $broadcastextras = NULL;
+                        $context_providersIDs = $this->Developer_model->get_context_providersIDs($plugin_id);
+                        if (!empty($context_providersIDs)) {
+                            $cpIDs = array();
+                            foreach ($context_providersIDs as $context_provider_id) {
+                                array_push($cpIDs, $context_provider_id['table_id']);
+                            }
+                            $tables = $this->Developer_model->get_tables($cpIDs);
+                        }
+                        else $tables = NULL; $cpIDs = NULL;
+                        $tablefields = $this->Developer_model->get_table_field($cpIDs);
+                        $data = array(
+                            'plugin_data' => $plugin_data,
+                            'settings' => $settings,
+                            'broadcasts' => $broadcasts,
+                            'broadcastextras' => $broadcastextras,
+                            'tables' => $tables,
+                            'tablefields' => $tablefields,
+                            'manager' => $this->session->userdata('manager'),
+                            'create_new' => 0,
+                            'iconpath' => "",
+                            'package_path' => ""
+                            );
+                        $this->template->build('developer_edit_plugin',$data);
+				    }
+			    } else { 
 					redirect(base_url('index.php/error/'));
 				}
 			}

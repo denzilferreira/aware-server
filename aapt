@@ -1,0 +1,7 @@
+#!/bin/bash
+BUILD_TOOLS_VERSION='23.0.1'
+BUILD_TOOL="/usr/local/Cellar/android-sdk/24.4.1_1/build-tools/$BUILD_TOOLS_VERSION/aapt"
+test -x "$BUILD_TOOL" && exec "$BUILD_TOOL" "$@"
+echo "It appears you do not have 'build-tools-$BUILD_TOOLS_VERSION' installed."
+echo "Use the 'android' tool to install them: "
+echo "    android update sdk --no-ui --filter 'build-tools-$BUILD_TOOLS_VERSION'"

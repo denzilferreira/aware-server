@@ -1,8 +1,8 @@
 var cct = $.cookie('csrf_cookie_aware');
 
-jQuery(document).ready(function(){
+jQuery(document).ready(function() {
 
-	$(document).on('change',function() {
+	$(document).on('change', function() {
 		$('#reload').css('display','block');
 	}
 	);
@@ -22,19 +22,18 @@ jQuery(document).ready(function(){
 	var newtablefieldcount = 1;
 	var newbroadcastextracount = 1;
 
-	//$('.add-setting').click(function() {
-	$(document).on('click','#add-setting', function() {
-		
+	$(document).on('click','#add-setting', function() {	
 		var $newdiv = 
 				["<div id='new_setting"+newsettingcount+"' class='new_setting'>",
 				"<a id='remove-settings' class='remove-button'>"+removeimg+"</a>",
 				"<select class='plugin_settings_type' name='new"+newsettingcount+":plugin_setting_type'>",
-					"<option value='integer'>Integer</option>",
+					"<option value='boolean'>Boolean</option>",
+                    "<option value='integer'>Integer</option>",
 					"<option value='real'>Real</option>",
 					"<option value='text'>Text</option>",
 				"</select>",
-				"<input class='plugin_settings' type='text' maxlength='400' name='new"+newsettingcount+":plugin_setting' placeholder='setting'>",
-				"<input class='plugin_settings_desc' type='text' maxlength='400' name='new"+newsettingcount+":plugin_setting_desc' placeholder='description'>",
+				"<input class='plugin_settings' type='text' name='new"+newsettingcount+":plugin_setting' placeholder='setting'>",
+				"<input class='plugin_settings_desc' type='text' name='new"+newsettingcount+":plugin_setting_desc' placeholder='description'>",
 				"</div>",
 				"<div class='add-setting-button' >",
 				"<a id='add-setting'>"+addimg+"</a>",
@@ -43,8 +42,7 @@ jQuery(document).ready(function(){
 			$(this).parent().remove();
 			$(".settings").append( $newdiv );
 			newsettingcount += 1;
-	}
-	);
+	});
 	
 	
 	$(document).on('click','#remove-settings', function() {
@@ -71,12 +69,13 @@ jQuery(document).ready(function(){
 				["<div id='new_setting"+newsettingcount+"' class='new_setting'>",
 				"<a id='remove-settings' class='remove-button'>"+removeimg+"</a>",
 				"<select class='plugin_settings_type' name='new"+newsettingcount+":plugin_setting_type'>",
-					"<option value='integer'>Integer</option>",
+					"<option value='boolean'>Boolean</option>",
+                    "<option value='integer'>Integer</option>",
 					"<option value='real'>Real</option>",
 					"<option value='text'>Text</option>",
 				"</select>",
-				"<input class='plugin_settings' type='text' maxlength='400' name='new"+newsettingcount+":plugin_setting' placeholder='setting'>",
-				"<input class='plugin_settings_desc' type='text' maxlength='400' name='new"+newsettingcount+":plugin_setting_desc' placeholder='description'>",
+				"<input class='plugin_settings' type='text' name='new"+newsettingcount+":plugin_setting' placeholder='setting'>",
+				"<input class='plugin_settings_desc' type='text' name='new"+newsettingcount+":plugin_setting_desc' placeholder='description'>",
 				"</div>",
 				"<div class='add-setting-button' >",
 				"<a id='add-setting'>"+addimg+"</a>",
@@ -108,7 +107,7 @@ jQuery(document).ready(function(){
 		else {
 			if ($isnew) ($parentdiv).remove();
 			else ($parentdiv).toggle();
-			addbroadcast(); //function call that will add the new div including the inputs, and will recreate the add-button
+			addbroadcast();
 		}
 	}
 	);
@@ -132,8 +131,8 @@ jQuery(document).ready(function(){
 		var $newdiv =
 			['<div id="new_broadcast'+newbroadcastcount+'" class="new_broadcast">',
 			'<a id="remove-broadcast" class="remove-button">'+removeimg+'</a>',
-			'<input class="plugin_broadcast" type="text" maxlength="400" name="new'+newbroadcastcount+':plugin_broadcast" placeholder="broadcast">',
-			'<input class="plugin_broadcast_desc" type="text" maxlength="400" name="new'+newbroadcastcount+':plugin_broadcast_desc" placeholder="description">',
+			'<input class="plugin_broadcast" type="text" name="new'+newbroadcastcount+':plugin_broadcast" placeholder="broadcast">',
+			'<input class="plugin_broadcast_desc" type="text" name="new'+newbroadcastcount+':plugin_broadcast_desc" placeholder="description">',
 			'<div class="add-newextra-button"><a class="add-newextra">'+extraimg+'</a></div>',
 			'</div>',
 			'<div class="add-broadcast-button" >',
@@ -155,8 +154,8 @@ jQuery(document).ready(function(){
 		var $newdiv = 
 				["<div id='new_extra-"+broadcastid+"-"+newbroadcastextracount+"' class='new_broadcast_extras'>",
 				"<a id='remove-broadcastextra' class='remove-button'>" +removeimg+ "</a>",
-				'<input class="plugin_extras" type="text" maxlength="400" name="new'+newbroadcastextracount+':plugin_broadcastextra:'+isnew+broadcastid+'" placeholder="broadcast extra">',
-				'<input class="plugin_extras_desc" type="text" maxlength="400" name="new'+newbroadcastextracount+':plugin_broadcastextra_desc:'+isnew+broadcastid+'" placeholder=description>',
+				'<input class="plugin_extras" type="text" name="new'+newbroadcastextracount+':plugin_broadcastextra:'+isnew+broadcastid+'" placeholder="broadcast extra">',
+				'<input class="plugin_extras_desc" type="text" name="new'+newbroadcastextracount+':plugin_broadcastextra_desc:'+isnew+broadcastid+'" placeholder=description>',
 				"</div>"
 				].join('\n');
 		$(this).parent().parent().append( $newdiv );
@@ -168,9 +167,9 @@ jQuery(document).ready(function(){
 		var $newdiv =
 			["<div id='new_contextprovider-"+newcontextprovidercount+"' class='new_contextprovider'>",
 			"<a id='remove-contextprovider' class='remove-button'>" +removeimg+"</a>",
-			"<input class='context_providers' type='text' maxlength='400' name='new"+newcontextprovidercount+":context_providers' placeholder='context provider'>",
-			"<input class='context_providers_uri' type='text' maxlength='100' name='new"+newcontextprovidercount+":context_providers_uri' placeholder='uri'>",
-			"<input class='context_provider_desc' type='text' maxlength='400' name='new"+newcontextprovidercount+":context_provider_desc' placeholder='description'>",
+			"<input class='context_providers' type='text' name='new"+newcontextprovidercount+":context_providers' placeholder='context provider'>",
+			"<input class='context_providers_uri' type='text' name='new"+newcontextprovidercount+":context_providers_uri' placeholder='uri'>",
+			"<input class='context_provider_desc' type='text' name='new"+newcontextprovidercount+":context_provider_desc' placeholder='description'>",
 			"</div>",
 			'<div class="add-context-button" >',
 			'<a class="add-context">'+addimg+'</a>',
@@ -211,9 +210,6 @@ jQuery(document).ready(function(){
 		$tablename="";
 		var $count = $('.context_providers:visible').length;
 		if ($id[0] == "context_provider") {
-			//$("#table-"+$id[1]).toggle();
-			//$("#table-"+$id[1]).empty();
-			//$("#table-"+$id[1]).remove();
 			($parentdiv).find('.context_providers').val('this_field_was_removed');
 			($parentdiv).find('.context_providers_uri').val('this_field_was_removed');
 			($parentdiv).find('.context_provider_desc').val('this_field_was_removed');
@@ -228,7 +224,6 @@ jQuery(document).ready(function(){
 		}
 		
 		if ($count == 1) {
-			//$("#tables").empty();
 			var $newdiv =
 				["<div id='new_contextprovider-"+newcontextprovidercount+"' class='new_contextprovider'>",
 				"<a id='remove-contextprovider' class='remove-button'>" +removeimg+"</a>",
@@ -289,7 +284,6 @@ jQuery(document).ready(function(){
 	
 	$(document).on('click', '.add-table', function() {
 		var contextproviderid = $(this).parent().parent().attr('id').split("-");
-		/* new here -------------------------------------------------------------------------------------------------------------------------------------------------------*/
 		var isnew = "";
 		if(contextproviderid[0].substring(0,3)=="new") {
 			isnew = "new";
