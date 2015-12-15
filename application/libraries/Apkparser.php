@@ -7,7 +7,7 @@ class Apkparser {
 	function getPackage($filepath) {
         $CI =& get_instance();
         $package_name = exec($CI->config->item('android_sdk')."build-tools/23.0.2/aapt d badging " . getcwd().$filepath . " | grep package");
-        preg_match("/ name='([a-z0-9.]*)'/", $package_name, $matches);
+        preg_match("/ name='([a-z0-9._]*)'/", $package_name, $matches);
         return $matches[1];
 	}
 	
