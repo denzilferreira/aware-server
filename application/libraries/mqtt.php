@@ -43,9 +43,7 @@ class Mqtt {
 		$this->socket = fsockopen($address, $this->port, $errno, $errstr, 60);
 
 		if (!$this->socket ) {
-			
 		    error_log("fsockopen() $errno, $errstr \n");
-			
 			return false;
 		}
 

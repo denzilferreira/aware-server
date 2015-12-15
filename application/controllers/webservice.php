@@ -168,7 +168,7 @@ class Webservice extends CI_Controller {
 						$msg = '[{"esm": { "esm_type": "1", "esm_title": "' . $params["esm-title"] . 
 						'", "esm_instructions": "' . $params["esm-instructions"] . 
 						'", "esm_submit": "' . "Submit" .
-						'", "esm_expiration_threashold": "' . $params["esm-threshold"] .
+						'", "esm_expiration_threshold": "' . $params["esm-threshold"] .
 						'", "esm_trigger": "' . $params["study-id"] . '" }}]';
 						
 					break;
@@ -305,10 +305,8 @@ class Webservice extends CI_Controller {
 						'", "esm_submit": "' . "Submit" .
 						'", "esm_expiration_threshold": "' . $params["esm-threshold"] .
 						'", "esm_trigger": "' . $params["study-id"] . '" }}]';
-						
 					break;
 				}
-			
 			break;
 			
 			// MQTT type: broadcasts
@@ -357,12 +355,10 @@ class Webservice extends CI_Controller {
 					$this->output->set_output(json_encode($error_array));
 					return;
 				}
-				
 				$topic['type'] = $params['custom-topic'];
 				$msg = $params['custom-description'];
 		}
 		echo json_encode($msg);
-			
 	}
 	
 	/*
@@ -379,28 +375,30 @@ class Webservice extends CI_Controller {
 			// Get MQTT server details
 			$mqtt_conf = $this->_get_mqtt_server_details($study_id);
 
+            // Using Mosquitto-PHP client that we installed over PECL
+            $client = new Mosquitto\Client('aware');
+            $client->setTlsCertificates("./public/ca.crt"); //server connection certificate is public
+            $client->setCredentials($mqtt_conf['mqtt_username'],$mqtt_conf['mqtt_password']); //load study-specific user credentials
+            $client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
+            
 			// Load MQTT Library
-			$this->load->library('mqtt', array(
-											'address' => $mqtt_conf['mqtt_server'], 
-											'port' => $mqtt_conf['mqtt_port'],
-											'clientid' => 'aware',
-										)
-								);
-								
+			//$this->load->library('mqtt', array('address' => $mqtt_conf['mqtt_server'], 'port' => $mqtt_conf['mqtt_port'], 'clientid' => 'aware'));
+
 			// Get devices
 			$devices = $this->input->post('devices_list');
 			
 			// Loop through devices and send message
 			foreach	($devices as $device) {
-				if( $this->mqtt->connect(false, NULL, $mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password'])) {
-					$this->mqtt->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 1);
-					$this->mqtt->close();
-				} else {
-					$error_array = array("error" => true);
-					$error_array = array_merge($error_array, array("errors" => $this->form_validation->error_array()));
-					$this->output->set_output(json_encode($error_array));
-					return;
-				}
+                $client->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 2, true);
+//				if( $this->mqtt->connect(false, NULL, $mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password'])) {
+//					$this->mqtt->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 1);
+//					$this->mqtt->close();
+//				} else {
+//					$error_array = array("error" => true);
+//					$error_array = array_merge($error_array, array("errors" => $this->form_validation->error_array()));
+//					$this->output->set_output(json_encode($error_array));
+//					return;
+//				}
 			}
 			
 			// Save ESM to history
@@ -437,8 +435,6 @@ class Webservice extends CI_Controller {
 		$study_id = $this->input->post('study_id', true);
 		$value = $this->input->post('value', true);
 		
-		// Topic and message for closing message
-		
 		// Update study related device's readwrite value (0=closed, 1=active/read)
 		$this->Aware_model->update_study_status($study_id, $value);	
 		
@@ -474,13 +470,11 @@ class Webservice extends CI_Controller {
 		$mqtt_credentials = $this->Aware_model->get_study_mqtt_credentials($study_id);
 		
 		// Get MQTT server details
-		$config = array(
-					'mqtt_server' => $this->config->item('mqtt_hostname'),
-					'mqtt_port' => $this->config->item('mqtt_port'),
-					'mqtt_username' => $mqtt_credentials['mqtt_username'],
-					'mqtt_password' => $this->encrypt->decode($mqtt_credentials['mqtt_password'])
-				);
-		
+		$config = array('mqtt_server' => $this->config->item('mqtt_hostname'),
+                        'mqtt_port' => $this->config->item('mqtt_port'),
+				        'mqtt_username' => $mqtt_credentials['mqtt_username'],
+				        'mqtt_password' => $this->encrypt->decode($mqtt_credentials['mqtt_password'])
+                  );
 		return $config;
 	}
 	
@@ -488,7 +482,6 @@ class Webservice extends CI_Controller {
 		if( strlen($pwd) == 0 ) return;
 		return $this->pbkdf2->create_hash($pwd);
 	}
-
 
 	// Sends updated study config to all study devices
 	public function study_config_updated() {
