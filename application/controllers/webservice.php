@@ -400,6 +400,7 @@ class Webservice extends CI_Controller {
 //					return;
 //				}
 			}
+            $client->disconnect();
 			
 			// Save ESM to history
 			$study_db = $this->_get_study_database($study_id);
