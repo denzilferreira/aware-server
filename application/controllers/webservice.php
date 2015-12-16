@@ -377,6 +377,9 @@ class Webservice extends CI_Controller {
 
             // Using Mosquitto-PHP client that we installed over PECL
             $client = new Mosquitto\Client('aware');
+            
+            echo $this->config->item("public_keys")."ca.crt";
+            
             $client->setTlsCertificates($this->config->item("public_keys")."ca.crt"); //load server SSL certificate
             $client->setCredentials($mqtt_conf['mqtt_username'],$mqtt_conf['mqtt_password']); //load study-specific user credentials
             $client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
