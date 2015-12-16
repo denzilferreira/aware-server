@@ -389,7 +389,8 @@ class Webservice extends CI_Controller {
 			foreach	($devices as $device) {
                 $client->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 2, true);
 			}
-            $client->disconnect();
+            //sleep(100);
+            //$client->disconnect();
             
 			// Save ESM to history
 			$study_db = $this->_get_study_database($study_id);
