@@ -380,7 +380,6 @@ class Webservice extends CI_Controller {
             
             $client->setTlsCertificates($this->config->item("public_keys")."server.crt"); //load server SSL certificate
             $client->setCredentials($mqtt_conf['mqtt_username'],$mqtt_conf['mqtt_password']); //load study-specific user credentials
-            $client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
             
 			// Load MQTT Library
 			//$this->load->library('mqtt', array('address' => $mqtt_conf['mqtt_server'], 'port' => $mqtt_conf['mqtt_port'], 'clientid' => 'aware'));
@@ -389,8 +388,10 @@ class Webservice extends CI_Controller {
 			$devices = $this->input->post('devices_list');
 			
 			// Loop through devices and send message
-			foreach	($devices as $device) {    
+			foreach	($devices as $device) {
+                $client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
                 $client->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 2, true);
+                $client->disconnect();
 //				if( $this->mqtt->connect(false, NULL, $mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password'])) {
 //					$this->mqtt->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 1);
 //					$this->mqtt->close();
@@ -401,8 +402,7 @@ class Webservice extends CI_Controller {
 //					return;
 //				}
 			}
-            $client->disconnect();
-			
+            
 			// Save ESM to history
 			$study_db = $this->_get_study_database($study_id);
 			$this->Researcher_model->add_esm_message($study_db, $topic['type'], $msg, implode(",", $devices));
