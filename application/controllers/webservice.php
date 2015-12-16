@@ -376,32 +376,23 @@ class Webservice extends CI_Controller {
 			$mqtt_conf = $this->_get_mqtt_server_details($study_id);
 
             // Using Mosquitto-PHP client that we installed over PECL
-            $client = new Mosquitto\Client('aware');
+            $client = new Mosquitto\Client("aware", false); //clean session is false
             
             $client->setTlsCertificates($this->config->item("public_keys")."server.crt"); //load server SSL certificate
-            $client->setCredentials($mqtt_conf['mqtt_username'],$mqtt_conf['mqtt_password']); //load study-specific user credentials
+            $client->setTlsOptions(Mosquitto\Client::SSL_VERIFY_PEER, "tlsv1.2", NULL); //make sure peer has certificate
+            $client->setCredentials($mqtt_conf['mqtt_username'],$mqtt_conf['mqtt_password']); //load study-specific user credentials so we can connect
+            $client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
             
-			// Load MQTT Library
-			//$this->load->library('mqtt', array('address' => $mqtt_conf['mqtt_server'], 'port' => $mqtt_conf['mqtt_port'], 'clientid' => 'aware'));
-
 			// Get devices
 			$devices = $this->input->post('devices_list');
 			
 			// Loop through devices and send message
 			foreach	($devices as $device) {
-                $client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
                 $client->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 2, true);
-                $client->disconnect();
-//				if( $this->mqtt->connect(false, NULL, $mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password'])) {
-//					$this->mqtt->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 1);
-//					$this->mqtt->close();
-//				} else {
-//					$error_array = array("error" => true);
-//					$error_array = array_merge($error_array, array("errors" => $this->form_validation->error_array()));
-//					$this->output->set_output(json_encode($error_array));
-//					return;
-//				}
 			}
+            
+            sleep(1000); //wait a bit before disconnecting to avoid socket issues
+            $client->disconnect();
             
 			// Save ESM to history
 			$study_db = $this->_get_study_database($study_id);
