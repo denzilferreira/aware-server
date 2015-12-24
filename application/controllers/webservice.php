@@ -390,7 +390,7 @@ class Webservice extends CI_Controller {
 			
 			// Loop through devices and send message
 			foreach	($devices as $device) {
-                $client->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 1, false);
+                $client->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 2, false);
 			}
             //sleep(100);
             //$client->disconnect();
