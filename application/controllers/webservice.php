@@ -57,27 +57,28 @@ class Webservice extends CI_Controller {
 		
 		if( strlen( $table ) == 0 || strlen($operation) == 0 ) {
             
-            if( $this->input->post('study_check') !== null ) { //we are just checking if this study is ongoing
+            //we are just checking if this study is ongoing
+            if( $this->input->post('study_check') == 1 ) {
                 $ok = array('message'=>'This study is ongoing.');
                 echo json_encode(array($ok));
                 return;
             }
 		
-            // Check if device credentials in the MQTT server
-            if ( ! $this->Aware_model->device_exists($device_id) ) {
-                $this->Aware_model->add_device($device_id);
-            }
-
-            // Check if device is already a participant in another study
-            if ( $this->Aware_model->device_participating_study($device_id, $study_id) ) {
+            //Is this device already in another study other than this one?
+            if( $this->Aware_model->device_participating_study($device_id, $study_id) ) {
                 // Unsubscribe from previous study
                 $this->Aware_model->unsubscribe_from_study($device_id);
             }
-
-            // Check if device has already joined the study
+            
+            //Was the device already in this study? (subscribed to study channels)
             if( ! $this->Aware_model->device_joined_study($device_id, $study_id) ) {
                 // Device not found, create study specific credentials for device
-                $this->Aware_model->add_device_to_study($device_id, $study_id);	
+                $this->Aware_model->add_device_to_study($device_id, $study_id);
+            }
+            
+            // Check if device credentials in the MQTT server (subscribed to himself)
+            if ( ! $this->Aware_model->device_exists($device_id) ) {
+                $this->Aware_model->add_device($device_id);
             }
             
 			// Get study configuration

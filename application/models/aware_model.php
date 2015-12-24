@@ -368,7 +368,6 @@ class Aware_model extends CI_Model {
 		return $this->db->affected_rows();
 	}
 	
-	// Check if device has already joined the study (has credentials)
 	// return TRUE / FALSE
 	function device_joined_study($device_id, $study_id) {
 		$this->db->select('topic');
@@ -376,13 +375,8 @@ class Aware_model extends CI_Model {
 		$this->db->like	('username', $device_id, 'none');
 		$this->db->where('rw', 1);
 		$this->db->like('topic', $study_id . '/', 'after');
-
 		$query = $this->db->get();
-
-		if (count($query->result_array()) > 0) {
-			return true;
-		}
-		return false;
+        return (count($query->result_array()) > 0);
 	}
 	
 	// Insert details to database when device joins the study for the first time
