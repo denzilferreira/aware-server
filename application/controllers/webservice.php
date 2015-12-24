@@ -388,7 +388,7 @@ class Webservice extends CI_Controller {
 			// Loop through devices and send message
 			foreach	($devices as $device) {
                 // Using Mosquitto-PHP client that we installed over PECL
-                $client = new Mosquitto\Client("aware", false);
+                $client = new Mosquitto\Client("aware", true);
                 $client->setTlsCertificates($this->config->item("public_keys")."server.crt"); //load server SSL certificate
                 $client->setTlsOptions(Mosquitto\Client::SSL_VERIFY_PEER, "tlsv1.2", NULL); //make sure peer has certificate
                 $client->setCredentials($mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password']); //load study-specific user credentials so we can connect
