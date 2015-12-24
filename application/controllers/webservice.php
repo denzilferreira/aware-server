@@ -55,42 +55,44 @@ class Webservice extends CI_Controller {
 		// Get study specific database
 		$study_db = $this->_get_study_database($study_id);
 		
-		// Check if device credentials in the MQTT server
-		if ( ! $this->Aware_model->device_exists($device_id) ) {
-			$this->Aware_model->add_device($device_id);
-		}
-	
-		// Check if device is already a participant in another study
-		if ( $this->Aware_model->device_participating_study($device_id, $study_id) ) {
-			// Unsubscribe from previous study
-			$this->Aware_model->unsubscribe_from_study($device_id);
-		}
-		
-		// Check if device has already joined the study
-		if( ! $this->Aware_model->device_joined_study($device_id, $study_id) ) {
-			// Device not found, create study specific credentials for device
-			$this->Aware_model->add_device_to_study($device_id, $study_id);	
-		}
-		
 		if( strlen( $table ) == 0 || strlen($operation) == 0 ) {
+            
+            if( $this->input->post('study_check') !== null ) { //we are just checking if this study is ongoing
+                echo json_encode(array());
+                return;
+            }
 		
+            // Check if device credentials in the MQTT server
+            if ( ! $this->Aware_model->device_exists($device_id) ) {
+                $this->Aware_model->add_device($device_id);
+            }
+
+            // Check if device is already a participant in another study
+            if ( $this->Aware_model->device_participating_study($device_id, $study_id) ) {
+                // Unsubscribe from previous study
+                $this->Aware_model->unsubscribe_from_study($device_id);
+            }
+
+            // Check if device has already joined the study
+            if( ! $this->Aware_model->device_joined_study($device_id, $study_id) ) {
+                // Device not found, create study specific credentials for device
+                $this->Aware_model->add_device_to_study($device_id, $study_id);	
+            }
+            
 			// Get study configuration
 			$config = $this->Researcher_model->get_study_configuration($study_id);
 
 			$pwd = random_string('alnum', 12);
 			$hash = $this->_pwd($pwd);
 
-            if( $this->input->post('study_check') !== null ) { //we are just checking if this study is ongoing
-                // Check if we have already created user for specified device id
-                if ( $this->Aware_model->mqtt_user_exists($device_id) ) {
-                    // User exists, update with newly generated password (added security by rotating passwords)
-                    $this->Aware_model->update_mqtt_user($device_id, $hash);
-                } else {
-                    // User doesn't exist, create a new
-                    $this->Aware_model->create_new_mqtt_user($device_id, $hash);
-                }    
+            // Check if we have already created user for specified device id
+            if ( $this->Aware_model->mqtt_user_exists($device_id) ) {
+                // User exists, update with newly generated password (added security by rotating passwords)
+                $this->Aware_model->update_mqtt_user($device_id, $hash);
+            } else {
+                // User doesn't exist, create a new
+                $this->Aware_model->create_new_mqtt_user($device_id, $hash);
             }
-			
 			
 			// Get MQTT server configuration (host and port)
 			$mqtt_config = $this->_get_mqtt_server_details($study_id);
