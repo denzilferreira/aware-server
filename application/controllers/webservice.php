@@ -58,7 +58,8 @@ class Webservice extends CI_Controller {
 		if( strlen( $table ) == 0 || strlen($operation) == 0 ) {
             
             if( $this->input->post('study_check') !== null ) { //we are just checking if this study is ongoing
-                echo json_encode(array());
+                $ok = array('message'=>'This study is ongoing.');
+                echo json_encode(array($ok));
                 return;
             }
 		
