@@ -80,7 +80,7 @@ class Webservice extends CI_Controller {
 			$pwd = random_string('alnum', 12);
 			$hash = $this->_pwd($pwd);
 
-            if( ! isset($this->input->post('study_check') ) { //we are just checking if this study is ongoing
+            if( ! isset($this->input->post('study_check')) ) { //we are just checking if this study is ongoing
                 // Check if we have already created user for specified device id
                 if ( $this->Aware_model->mqtt_user_exists($device_id) ) {
                     // User exists, update with newly generated password (added security by rotating passwords)
