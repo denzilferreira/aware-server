@@ -387,17 +387,16 @@ class Webservice extends CI_Controller {
             $client->setTlsCertificates($this->config->item("public_keys")."server.crt"); //load server SSL certificate
             //$client->setTlsOptions(Mosquitto\Client::SSL_VERIFY_PEER, "tlsv1.2", NULL); //make sure peer has certificate
             $client->setCredentials($mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password']); //load study-specific user credentials so we can connect
-            $client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
             
 			// Get devices
 			$devices = $this->input->post('devices_list');
 			
 			// Loop through devices and send message
 			foreach	($devices as $device) {
+                $client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
                 $client->publish($topic['study_id'] . "/" . $device . "/" . $topic['type'], $msg, 1, false);
+                $client->disconnect();
 			}
-            sleep(100);
-            $client->disconnect();
             
 			// Save ESM to history
 			$study_db = $this->_get_study_database($study_id);
