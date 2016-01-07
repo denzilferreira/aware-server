@@ -388,6 +388,7 @@ class Webservice extends CI_Controller {
 			// Using Mosquitto-PHP client that we installed over PECL
             $client = new Mosquitto\Client("aware", true);
             $client->setTlsCertificates($this->config->item("public_keys")."server.crt"); //load server SSL certificate
+            $client->setTlsOptions(Mosquitto\Client::SSL_VERIFY_PEER, "tlsv1.2", NULL); //make sure client is using our server certificate to connect
             $client->setCredentials($mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password']); //load study-specific user credentials so we can connect
 			$client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port'], 60); //make connection, keep alive 30 seconds
 			
@@ -503,15 +504,20 @@ class Webservice extends CI_Controller {
 			// Using Mosquitto-PHP client that we installed over PECL
             $client = new Mosquitto\Client("aware", true);
             $client->setTlsCertificates($this->config->item("public_keys")."server.crt"); //load server SSL certificate
+            $client->setTlsOptions(Mosquitto\Client::SSL_VERIFY_PEER, "tlsv1.2", NULL); //make sure client is using our server certificate to connect
             $client->setCredentials($mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password']); //load study-specific user credentials so we can connect
+            $client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
             
 			// Loop through devices and send message
 			foreach	($study_devices as $device) {
 				if (array_key_exists("device_id", $device)) {
-					$client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port']); //make connection
 					$client->publish($study_id . "/" . $device["device_id"] . "/configuration", $config, 1, false);
+					$client->loop();
+                	sleep(1);
 				}
 			}
+			$client->disconnect();
+			
 		} else {
 			header('HTTP/1.0 401 Unauthorized');
 			exit();
