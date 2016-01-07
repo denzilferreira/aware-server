@@ -4,23 +4,26 @@ class Apkparser {
 	
     function __construct(){}
     
-	function getPackage($filepath) {
+	function getPackage($filepath) {		
         $CI =& get_instance();
-        $package_name = exec($CI->config->item('android_sdk')."build-tools/23.0.2/aapt d badging " . getcwd().$filepath . " | grep package");
-        preg_match("/ name='([a-z0-9._]*)'/", $package_name, $matches);
+        putenv("PATH=" .getenv("PATH"). ':'.$CI->config->item('android_sdk')."build-tools/23.0.2");
+        $package_name = exec("aapt d badging " . getcwd().$filepath . " | grep package");
+		preg_match("/ name='([a-z0-9._]*)'/", $package_name, $matches);
         return $matches[1];
 	}
 	
 	function getVersion($filepath) {
         $CI =& get_instance();
-		$version = exec($CI->config->item('android_sdk')."build-tools/23.0.2/aapt d badging " . getcwd().$filepath . " | grep versionCode");
+        putenv("PATH=" .getenv("PATH"). ':'.$CI->config->item('android_sdk')."build-tools/23.0.2");
+		$version = exec("aapt d badging " . getcwd().$filepath . " | grep versionCode");
         preg_match("/versionCode='([0-9]*)'/", $version, $matches);
         return $matches[1];
 	}
 	
 	function getPermissions($filepath) {
         $CI =& get_instance();
-        exec($CI->config->item('android_sdk')."build-tools/23.0.2/aapt dump permissions " . getcwd().$filepath . " | grep uses-permission", $permissions );
+        putenv("PATH=" .getenv("PATH"). ':'.$CI->config->item('android_sdk')."build-tools/23.0.2");
+        exec("aapt dump permissions " . getcwd().$filepath . " | grep uses-permission", $permissions);
         $perms = array();
         if( count($permissions) > 0 ) {
           foreach( $permissions as $perm ) {
