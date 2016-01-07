@@ -716,16 +716,6 @@ class Researcher extends CI_Controller {
 				$valid_config["plugins"] = $valid_plugins;
 			}
 
-			// TODO: We can have empty config, this is OK?
-			/*// If no valid config parameters found
-			if (sizeof($valid_config) == 0) {
-				// Sent config wasn't empty, user is trying to exploit?
-				if (!empty($config)) {
-					header('HTTP/1.0 401 Unauthorized');
-					exit();
-				}
-			}*/
-
 			// Write config
 			$success = $this->Researcher_model->update_study_config($study_id, json_encode($valid_config));
 			$this->output->set_output(json_encode($success));
@@ -775,28 +765,21 @@ class Researcher extends CI_Controller {
 				// Delete device and its' data
 				$success = $this->Researcher_model->remove_device($study_db, $study_tables, $device_id);
 
-
 				// Get MQTT server details
 				$mqtt_conf = $this->_get_mqtt_server_details($study_id);
+					
+				// Using Mosquitto-PHP client that we installed over PECL
+	            $client = new Mosquitto\Client("aware", true);
+	            $client->setTlsCertificates($this->config->item("public_keys")."server.crt"); //load server SSL certificate
+	            $client->setTlsOptions(Mosquitto\Client::SSL_VERIFY_PEER, "tlsv1.2", NULL); //make sure client is using our server certificate to connect
+	            $client->setCredentials($mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password']); //load study-specific user credentials so we can connect
+				$client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port'], 60); //make connection, keep alive 30 seconds
 
-				// Load MQTT Library
-				$this->load->library('mqtt', array(
-												'address' => $mqtt_conf['mqtt_server'], 
-												'port' => $mqtt_conf['mqtt_port'],
-												'clientid' => 'aware',
-											)
-									);
-
-				// Send ACTION_QUIT_STUDY to device
-				if( $this->mqtt->connect(false, NULL, $mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password'])) {
-					$this->mqtt->publish($study_id . "/" . $device_id . "/broadcasts", "ACTION_QUIT_STUDY", 1);
-					$this->mqtt->close();
-				} else {
-					$this->output->set_output(json_encode(array("success" => "false")));
-					return;
-				}
-
-
+				$client->publish($study_id . "/" . $device_id . "/broadcasts", "ACTION_QUIT_STUDY", 1, false);
+                $client->loop();
+                sleep(1);
+				$client->disconnect();
+				
 				$this->output->set_output(json_encode(array("success" => $success)));
 			} else {
 				header('HTTP/1.0 401 Unauthorized');
