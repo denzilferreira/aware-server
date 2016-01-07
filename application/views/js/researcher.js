@@ -482,7 +482,7 @@ function populateMQTTMessage(mqtt_type, data) {
 				$('.esm-message.5 [name="esm-options"]').select2("val", data["esm_quick_answers"]);
 				$('.esm-message.5 [name="esm-threshold"]').select2("val", data["esm_expiration_threshold"]);
 			break;
-			case "6": // Quick answer
+			case "6": // Scales
 				$('.esm-message.6 [name="esm-title"]').val(data['esm_title']);
 				$('.esm-message.6 [name="esm-instructions"]').val(data['esm_instructions']);
 				$('.esm-message.6 [name="esm-scale-min"]').val(data["esm_scale_min"]);
