@@ -198,22 +198,19 @@ echo '<div class="study-titles">Status:</div>';
 	'</div>
 	<div class="study-titles">Database name:</div>
 	<div class="study-values"><p>' . $study_data["db_name"] . '</p></div>';
-
-
-	if ($db_credentials['db_hostname'] == 'localhost') {
-		echo
-		'<div class="study-titles">Database access:</div>
-		<div class="study-values"><a href="#" id="show-db-credentials">View credentials</a></p></div>
-
-		<div id="study-data-dialog" title="View credentials">
-			<p>To view the collected data, use any MySQL client with the following database credentials:</p>
-			<b>Hostname: </b>' . (($db_credentials["db_hostname"] == "localhost") ? "localhost" : $db_credentials["db_hostname"]).'<br>
-			<b>Port: </b>' . $db_credentials["db_port"] . '<br>
-			<b>Username: </b>' . $db_credentials["db_username"] . '<br>
-			<b>Password: </b>' . $db_credentials["db_password"] . '<br>
-		</div>';
-	}
 	
+	echo
+	'<div class="study-titles">Database access:</div>
+	<div class="study-values"><a href="#" id="show-db-credentials">View credentials</a></p></div>
+
+	<div id="study-data-dialog" title="View credentials">
+		<p>To view the collected data, use any MySQL client with the following database credentials:</p>
+		<b>Hostname: </b>' . (($db_credentials["db_hostname"] == "localhost") ? "localhost" : $db_credentials["db_hostname"]).'<br>
+		<b>Port: </b>' . $db_credentials["db_port"] . '<br>
+		<b>Username: </b>' . $db_credentials["db_username"] . '<br>
+		<b>Password: </b>' . $db_credentials["db_password"] . '<br>
+	</div>';
+		
 	echo
 	'<div class="study-titles">Created:</div>
 	<div class="study-values" id="study-created-value"><p>' . mdate($datestring, $study_data["created"]) . ' </p></div>
