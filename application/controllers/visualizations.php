@@ -145,7 +145,7 @@ class Visualizations extends CI_Controller {
 		// example usage: echo '<img src=data:image/png;base64,'.$images["0"].' />';
 		if ($this->_is_authorized($study_id)) {
 			// path to the image folder
-			$image_folder = '/uploads/visualizations/';
+			$image_folder = getcwd().'/uploads/visualizations/';
 
 			$base64_images = array();
 			$paths = $this->Visualization_model->get_study_charts($study_id, "path");

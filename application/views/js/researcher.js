@@ -1401,7 +1401,7 @@ $(document).ready(function(){
 			async: false,
 			url: "../../webservice/study_config_updated",
 			type: "POST",
-			data: { study_id : study_id, config : JSON.stringify(config), 'csrf_token_aware' : cct},
+			data: { study_id : study_id, config : JSON.stringify([config]), 'csrf_token_aware' : cct},
 			dataType: "json"
 		});
 
