@@ -119,8 +119,6 @@ class Webservice extends CI_Controller {
 			$decode->{'sensors'}[] = array('setting' => 'study_start', 'value' => (string) round(microtime(true) * 1000));
 			$decode->{'sensors'}[] = array('setting' => 'webservice_server', 'value' => base_url().'index.php/webservice/index/'.$study_id.'/'.$api_key);
 			$decode->{'sensors'}[] = array('setting' => 'status_webservice', 'value' => 'true');
-			$decode->{'sensors'}[] = array('setting' => 'webservice_wifi_only', 'value' => 'false'); //by default we sync over 3G
-			$decode->{'sensors'}[] = array('setting' => 'frequency_webservice', 'value' => '30'); //every 30 minutes
 
 			// JSON encode array
 			echo json_encode(array($decode));
