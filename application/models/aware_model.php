@@ -44,24 +44,19 @@ class Aware_model extends CI_Model {
 		}
 		
 		if ( $this->input->post('data') != null ) {
-			$array_data = json_decode( $this->input->post('data'), true );
+			//$array_data = json_decode( $this->input->post('data'), true );
+			//foreach( $array_data as $data ) {
+			//	$database->insert( $table, $data );	
+			//}
 			
-			foreach( $array_data as $data ) {
-				$database->insert( $table, $data );	
-			}
-			
-/*
 			try {
-				$database->insert_batch( $table, $array_data );
+				$data = json_decode( $this->input->post('data'), true );
+				$database->insert_batch( $table, $data );
 			} catch( Exception $e ) {
 				foreach( $array_data as $data ) {
 					$database->insert( $table, $data );	
 				}
 			}
-*/
-			
-			//$data = json_decode( $this->input->post('data'), true );
-			//$database->insert_batch( $table, $data );
 		}
 	}
 	
