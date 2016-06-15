@@ -283,11 +283,7 @@ class Researcher_model extends CI_Model {
 				SELECT TABLE_NAME, TABLE_ROWS
 				FROM information_schema.TABLES
 				WHERE TABLE_SCHEMA = ?
-				AND TABLE_NAME NOT IN ('studies', 'study_privileges', 'aware_device', 'configurations', 'users', 'user_levels', 'mqtt_history')
-				AND TABLE_NAME NOT LIKE 'mqtt_%'
-				AND TABLE_NAME NOT LIKE 'applications_%'
-				AND TABLE_NAME NOT LIKE 'sensor_%'
-				AND TABLE_ROWS != 0
+				AND TABLE_NAME NOT IN ('studies', 'study_privileges', 'configurations', 'users', 'user_levels', 'mqtt_history')
 				ORDER BY TABLE_ROWS DESC";
 		$query = $database->query($query, array($database->database));
 		
@@ -409,8 +405,6 @@ class Researcher_model extends CI_Model {
 			return $result_array;
 		}
 	}
-	
-
 	
 	function add_esm_message($database, $topic, $message, $receivers) {
 		$data = array(
@@ -582,7 +576,8 @@ class Researcher_model extends CI_Model {
 					"developer_sensors_settings.setting_type AS setting_type, " .
 					"developer_sensors_settings.setting_default_value AS setting_default_value, " .
 					"\"sensor\" AS type, ".
-					"developer_sensors.sensor AS package_name " .
+					"developer_sensors.sensor AS package_name, " .
+					"NULL AS package_version " .
 					"FROM developer_sensors " .
 					"LEFT JOIN developer_sensors_settings ON developer_sensors.id = developer_sensors_settings.sensor_id ".
 
@@ -595,7 +590,8 @@ class Researcher_model extends CI_Model {
 					"developer_plugins_settings.setting_type AS setting_type, " .
 					"developer_plugins_settings.setting_default_value AS setting_default_value, " .
 					"\"plugin\" AS type, ".
-					"developer_plugins.package AS package_name " .
+					"developer_plugins.package AS package_name, " .
+					"developer_plugins.version AS package_version " .
 					"FROM developer_plugins ".
 					"LEFT JOIN developer_plugins_settings ON developer_plugins.id = developer_plugins_settings.plugin_id ".
 					"WHERE developer_plugins.state = 1 ".
@@ -616,7 +612,8 @@ class Researcher_model extends CI_Model {
 					"developer_plugins_settings.setting_type AS setting_type, " .
 					"developer_plugins_settings.setting_default_value AS setting_default_value, " .
 					"\"plugin\" AS type, ".
-					"developer_plugins.package AS package_name " .
+					"developer_plugins.package AS package_name, " .
+					"developer_plugins.version AS package_version " .
 					"FROM developer_plugins ".
 					"LEFT JOIN developer_plugins_settings ON developer_plugins.id = developer_plugins_settings.plugin_id ".
 					"LEFT JOIN developer_plugins_studyaccess ON developer_plugins_studyaccess.study_api = ?".
@@ -631,7 +628,7 @@ class Researcher_model extends CI_Model {
 	}
 
 	function get_public_plugins_packages() {
-		$this->db->select("package");
+		$this->db->select("package, version");
 		$this->db->from("developer_plugins");
 		$this->db->where("state", 1);
 
@@ -640,14 +637,14 @@ class Researcher_model extends CI_Model {
 
 		$plugins = array();
 		foreach ($result_array as $plugin) {
-			array_push($plugins, $plugin["package"]);
+			array_push($plugins, array($plugin["package"], $plugin["version"]));
 		}
 
 		return $plugins;
 	}
 
 	function get_study_specific_plugins_packages($api_key) {
-		$query = 	"SELECT package ".
+		$query = 	"SELECT package, version ".
 					"FROM developer_plugins ".
 					"LEFT JOIN developer_plugins_studyaccess ON developer_plugins_studyaccess.study_api = ? ".
 					"WHERE developer_plugins.id = developer_plugins_studyaccess.plugin_id";

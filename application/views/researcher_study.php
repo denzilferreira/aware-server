@@ -1,5 +1,41 @@
 <?php
 
+//Process packages that have the same package name, show the most recent one
+for($i = 0; $i < count($sensors_configurations); $i++) {
+	$package_name = $sensors_configurations[$i]["package_name"];
+	$package_version = $sensors_configurations[$i]["package_version"];
+
+	if(strpos($package_name, "com.aware.plugin.") === false) { //it's a default sensor, just add
+		$sensors_aux[] = $sensors_configurations[$i];
+		continue;
+	}
+
+	//it's a plugin, check if we have multiple with the same package name, use the newest version
+	$found = false;
+	for( $j = $i+1; $j < count($sensors_configurations); $j++) {
+		$package_name_s = $sensors_configurations[$j]["package_name"];
+		$package_version_s = $sensors_configurations[$j]["package_version"];
+		
+		if ( strcmp($package_name, $package_name_s) === 0 ) {
+			if ($package_version > $package_version_s) {
+				$sensors_aux[] = $sensors_configurations[$i];
+				$found = true;
+				break;
+			} else if ($package_version < $package_version_s) {
+				$sensors_aux[] = $sensors_configurations[$j];
+				$found = true;
+				break;
+			}
+		}
+	}
+	
+	if (!$found) {
+		$sensors_aux[] = $sensors_configurations[$i];
+	}
+}
+
+$sensors_configurations = $sensors_aux;
+
 $datestring = "%d %F %Y";
 $errors = $this->session->flashdata('errors');
 
@@ -7,36 +43,36 @@ $delete_img_properties = array(
           'src' => base_url(). '/application/views/images/delete_icon.png',
           'title' => 'Remove co-researcher from study',
           'class' => 'del_image',
-          'width' => '11',
-          'height' => '11'
+          'width' => '45',
+          'height' => '45'
 );
 $delete_study_img_properties = array(
           'src' => base_url().'/application/views/images/delete_icon.png',
           'title' => 'Remove study and data collected',
           'class' => 'delete-study-img',
-          'width' => '11',
-          'height' => '11'
+          'width' => '45',
+          'height' => '45'
 );
 $cancel_desc_edit_img_properties = array(
           'src' => base_url().'/application/views/images/delete_icon.png',
           'title' => 'Revert changes',
           'class' => 'del_image',
-          'width' => '11',
-          'height' => '11'
+          'width' => '45',
+          'height' => '45'
 );
 $ok_img_properties = array(
           'src' => base_url().'/application/views/images/ok.png',
           'title' => 'Confirm changes',
           'class' => 'ok_image',
-          'width' => '13',
-          'height' => '13'
+          'width' => '45',
+          'height' => '45'
 );
 $edit_img_properties = array(
           'src' => base_url().'/application/views/images/edit.png',
           'title' => 'Edit',
           'class' => 'edit_image',
-          'width' => '11',
-          'height' => '11'
+          'width' => '45',
+          'height' => '45'
 );
 
 $join_url = base_url() . 'index.php/webservice/index/' . $study_data["id"] . '/' . $study_data["api_key"];
@@ -65,22 +101,20 @@ if (!$connected) {
 
 
 echo'<div id="' . $study_data["id"]. '" class="study_id" "style="display: none;"></div>
-	<div class="name">' . $study_data["study_name"];
-if ($this->session->userdata('id') == $study_data['creator_id']) {
-	echo 	'<a href="#" id="delete-study">' . img($delete_study_img_properties) . '</a></div>
-			<div id="delete-study-dialog" title="Confirmation required">
-				Are you sure you want to delete this study? <br>All of the collected data will be lost.
-			</div>';
-} else {
-	echo '</div>';
-}
+	<div class="name">' . $study_data["study_name"] . '</div>';
 echo '<div class="study-titles">Status:</div>';
 	echo '<input type="text" style="display: none;" id="study-status" value="' . $study_data['status'] . '">';
 	if ($this->session->userdata('id') == $study_data['creator_id'] || $this->session->userdata('manager') == 1) {
 		echo	'<div class="study-values"><div class="switch-container"><span class="toggle-status', $study_data["status"] == 0 ? " active" : "", '">Closed</span><input type="checkbox" class="study-status switchbutton" id="close-confirm"', $study_data["status"] == 1 ? " checked" : "", '><label for="close-confirm"></label><span class="toggle-status', $study_data["status"] == 1 ? " active" : "", '">Open</span></div></div>
 				<div id="close-study-dialog" title="Confirmation required">
 					Are you sure you want to close this study? <br>No more data can be sent to this study after closing.
+				</div><br clear="all"/>';
+		
+		echo 	'<a href="#" id="delete-study" class="button_red" style="float:right; margin-right:30px">Delete study</a>
+				<div id="delete-study-dialog" title="Confirmation required">
+					Are you sure you want to delete this study? <br>All of the collected data will be lost.
 				</div>';
+		
 	} else {
 		echo '<div class="study-values">';
 		echo $study_data["status"] == 1 ? "Open" : "Closed";
@@ -102,14 +136,14 @@ echo '<div class="study-titles">Status:</div>';
 	<div class="study-description">
 	<textarea disabled rows="1" cols="60" id="expand_area">' . strip_tags($study_data["description"]) . '</textarea>
 	</div>
-	<div id="description-buttons">
-		<div class="edit-button"><a href="#" class="edit-description">' . img($edit_img_properties) . '</a></div>
+	<div id="description-buttons" style="margin-bottom: 50px">
+		<div class="edit-button"><a href="#" class="edit-description button_blue">Edit description</a></div>
 		<div class="save-cancel">
 			<div class="cancel-button">
-				<a href="#" class="delete-co">' . img($cancel_desc_edit_img_properties) . '</a>
+				<a href="#" class="delete-co button_red">Cancel</a>
 			</div>
 			<div class="save-button">
-				<a href="#" class="delete-co">' . img($ok_img_properties) . '</a>
+				<a href="#" class="delete-co button_green">Save</a>
 			</div>
 		</div>
 	</div>
@@ -128,6 +162,7 @@ echo '<div class="study-titles">Status:</div>';
 			echo	"<li class='sensor'>" . 
 					"<div class='sensor-arrow up'></div>".
 					"<input type='hidden' class='package-name' value='" . $configuration["package_name"] . "'>".
+					"<input type='hidden' class='package-version' value='" . $configuration["package_version"] . "'>".
 					"<p class='" . $configuration["type"] . " label'>" . $configuration["plugin_name"] . "</p>".
 					"<ul class='sensor-settings'>";
 			$type = $configuration["plugin_name"];
@@ -141,16 +176,13 @@ echo '<div class="study-titles">Status:</div>';
 					"<label for='" . $configuration["setting_name"] . "'>" . ucfirst(str_replace("_", " ", $configuration["setting_name"])) . "</label>";
 		// Sesor setting type int/text, use normal input fied
 		} else if (($configuration["setting_type"] == "integer" || $configuration["setting_type"] == "text" || $configuration["setting_type"] == "real")) {
-			// ESM Questionnaire plugin
-			echo 	"<label" . ($configuration["plugin_id"] == 67 ? " style='display: none !important;'" : '') ." for='" . $configuration["setting_name"] . "' class='setting-label'>" . ucfirst(str_replace("_", " ", $configuration["setting_name"])) . ":</label>".
-					"<input" . ($configuration["plugin_id"] == 67 ? " style='display: none !important;'" : '') ." type='text' id='" . $configuration["setting_name"] . "' name='" . $configuration["setting_name"] . "' class='sensor value " . $configuration["setting_type"] . "' placeholder='" . $configuration["setting_default_value"] . "' value=''>";
+			
+			echo 	"<label for='" . $configuration["setting_name"] . "' class='setting-label'>" . ucfirst(str_replace("_", " ", $configuration["setting_name"])) . ":</label>".
+					"<input type='text' id='" . $configuration["setting_name"] . "' name='" . $configuration["setting_name"] . "' class='sensor value " . $configuration["setting_type"] . "' placeholder='" . $configuration["setting_default_value"] . "' value=''>";
 		}
-		// Setting help / tooltip (don't display for ESM questionnaire because the setting itself is hidden)
-		if ($configuration["plugin_id"] != "67") {
-			echo	"<p class='sensor-setting-description'>" . ucfirst($configuration["setting_description"]) . "</p>".
+		// Setting help / tooltip
+		echo	"<p class='sensor-setting-description'>" . ucfirst($configuration["setting_description"]) . "</p>".
 					"<input type='hidden' class='sensor-setting-name' value='" . $configuration["setting_name"] . "'>";
-		}
-
 		echo "</li>";
 
 	}
@@ -158,13 +190,13 @@ echo '<div class="study-titles">Status:</div>';
 	echo	"</ul></ul></div></div>";
 
 	echo	'	<div id="sensors-buttons">
-					<div class="edit-button"><a href="#" class="edit-description">' . img($edit_img_properties) . '</a></div>
+					<div class="edit-button"><a href="#" class="edit-description button_blue">Edit sampling</a></div>
 					<div class="save-cancel">
 						<div class="cancel-button">
-							<a href="#" class="delete-co">' . img($cancel_desc_edit_img_properties) . '</a>
+							<a href="#" class="delete-co button_red">Cancel</a>
 						</div>
 						<div class="save-button">
-							<a href="#" class="delete-co">' . img($ok_img_properties) . '</a>
+							<a href="#" class="delete-co button_green">Save</a>
 						</div>
 					</div>
 				</div>

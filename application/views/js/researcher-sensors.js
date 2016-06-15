@@ -57,7 +57,7 @@ $(document).ready(function() {
 
 		var empty = true;
 		var sensor_settings = $(this).parent().parent();
-
+		
 		// Check if we got any values set (checkboxes checked or input fields values)
 		$(sensor_settings).children().children("input.sensor.value").each(function(e) {
 			if ((!$(this).hasClass("boolean") && $(this).hasClass("enabled")) || ($(this).hasClass("boolean") && $(this).prop("checked"))) {
@@ -72,13 +72,6 @@ $(document).ready(function() {
 			$(this).parent().parent().parent().removeClass("enabled");
 		} else {
 			$(this).parent().parent().parent().addClass("enabled");
-		}
-
-		// ESM-Q
-		var plugin_id = $(this).parent().parent().parent().children(".plugin_id").val();
-		if (plugin_id == 53) {
-			console.debug("ESM-Q");
-			toggleESMQ(c, sensor_settings);
 		}
 	});
 

@@ -38,11 +38,23 @@ class Plugins_model extends CI_Model {
 		if( strlen($package_name) == 0 ) {
 			return;
 		}
-		$this->db->select('developer_plugins.*, users.first_name, users.last_name, users.email');
-		/* $this->db->where('status',1); - Fixes not being able to install study specific plugins */
-		$this->db->where('package',$package_name);
+		
+		$query = "SELECT * FROM (
+			SELECT `developer_plugins`.*, `users`.`first_name`, `users`.`last_name`, `users`.`email` FROM (`developer_plugins`) JOIN `users` ON `developer_plugins`.`creator_id`=`users`.`id` WHERE `package` = '$package_name') as a
+			WHERE a.lastupdate = (
+				select max(lastupdate) from `developer_plugins` where `package`= '$package_name'
+		)";
+		
+		$query = $this->db->query($query);
+		
+		/*$this->db->select('developer_plugins.*, users.first_name, users.last_name, users.email');
+		$this->db->where('package', $package_name);
 		$this->db->join('users','developer_plugins.creator_id=users.id');
+		$this->db->group_by('version');
 		$query = $this->db->get('developer_plugins');
+		
+		echo $this->db->last_query();*/
+		
 		return json_encode($query->row_array());
 	}
 }
