@@ -270,8 +270,7 @@ VALUES
 	(22,'Temperature',NULL),
 	(23,'Wi-Fi',NULL),
 	(24,'Webservices',NULL),
-	(25,'Android Wear',NULL),
-	(26,'Timezone',NULL);
+	(25,'Timezone',NULL);
 
 /*!40000 ALTER TABLE `developer_sensors` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -336,7 +335,7 @@ VALUES
 	(37,15,'mqtt_password','the password to connect to the MQTT Server.','text',NULL),
 	(38,15,'mqtt_keep_alive','how frequently to ping the server to keep alive the connection, in minutes (default is every 5 minutes).','integer','5'),
 	(39,15,'mqtt_qos','the QoS expected for message delivery (2=exactly once, 1=at least once, 0=no guarantee).','integer','2'),
-	(40,16,'status_network','true or false to activate or deactivate sensor.','boolean',NULL),
+	(40,16,'status_network_events','true or false to activate or deactivate sensor.','boolean',NULL),
 	(41,16,'status_network_traffic','true or false to activate or deactivate sensor.','boolean',NULL),
 	(42,17,'status_processor','true or false to activate or deactivate sensor.','boolean',NULL),
 	(43,17,'frequency_processor','frequency in seconds to update the processor load, by default is 10 seconds.','integer','200000'),
@@ -351,13 +350,13 @@ VALUES
 	(52,23,'status_wifi','true or false to activate or deactivate sensor.','boolean',NULL),
 	(53,23,'frequency_wifi','how often to scan for devices, in seconds (default = 60 seconds).','integer','60'),
 	(54,24,'webservice_wifi_only','Upload data to webservices only when connected to Wi-Fi','boolean',NULL),
-	(55,24,'frequency_webservice','How often the data is synchronised with the webservices?','integer','30'),
-	(56,24,'frequency_clean_old_data','How frequently to clean old data? (0 = never, 1 = weekly, 2 = monthly)','integer','0'),
+	(55,24,'frequency_webservice','How frequently the data is synced to server? (every 1-59 minutes, 0 to disable)','integer','30'),
+	(56,24,'frequency_clean_old_data','How frequently to clean old data? (0 = never, 1 = weekly, 2 = monthly, 3 = daily, 4 = always)','integer','0'),
 	(57,2,'frequency_applications','How frequently to check updates on background applications and services statuses.','integer','30'),
-	(58,2,'status_keyboard','Log keyboard input.','boolean',NULL),
-	(59,25,'status_android_wear','Sync Android Wear data.','boolean',NULL),
-	(60,26,'status_timezone','Logs user\'s current timezone','boolean',NULL),
-	(61,26,'frequency_timezone','frequency in seconds to check for changes in timezone.','integer',NULL);
+	(58,2,'status_keyboard','log keyboard input.','boolean',NULL),
+	(60,26,'status_timezone','log user\'s current timezone.','boolean',NULL),
+	(61,26,'frequency_timezone','frequency in seconds to check for changes in timezone.','integer',NULL),
+	(62,24,'webservice_charging','sync data only if charging.','boolean',NULL);
 
 /*!40000 ALTER TABLE `developer_sensors_settings` ENABLE KEYS */;
 UNLOCK TABLES;
