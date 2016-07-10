@@ -182,10 +182,10 @@ class Researcher extends CI_Controller {
 					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/jquery.formatDateTime.js'></script>");
 					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/select2/select2.js'></script>");
 					$this->template->append_metadata("<link rel='stylesheet' type='text/css' href='" . base_url() . "application/views/js/select2/select2.css'/>");
-					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/select2-researcher_study.min.js'></script>");
+					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/select2-researcher_study.js'></script>");
 					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/jquery.autogrow-textarea.js'></script>");
 					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/tablesorter.researcher-mqtt-history.min.js'></script>");
-					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/researcher-sensors.min.js'></script>");
+					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/researcher-sensors.js'></script>");
 					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/jquery.numeric.js'></script>");
 					$this->template->append_metadata("<script src='" . base_url() . "application/views/js/esmq.js'></script>");
 					$this->template->append_metadata("<link rel='stylesheet' type='text/css' href='" . base_url() . "application/views/css/esmq.css'/>");
