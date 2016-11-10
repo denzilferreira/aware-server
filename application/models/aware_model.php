@@ -106,10 +106,11 @@ class Aware_model extends CI_Model {
 			}
 			
 			$added_columns = array();
-			$removed_columns = array();
+			//$removed_columns = array();
 			
 			//Check if we dropped a column
-			foreach( $columns_server as $cs ) {
+			/*
+foreach( $columns_server as $cs ) {
 				$found = false;
 				foreach($columns_client as $cc ) {
 					if(strcmp($cs, $cc["field"])==0) {
@@ -122,6 +123,7 @@ class Aware_model extends CI_Model {
 					$removed_columns[] = $cs;
 				}
 			}
+*/
 			
 			//Check if we added a column
 			foreach( $columns_client as $cc ) {
@@ -146,9 +148,11 @@ class Aware_model extends CI_Model {
 			foreach( $added_columns as $column ) {
 				$alter_sql .= "ADD COLUMN `".$column['field']."` ".$column['type'].", ";
 			}
-			foreach( $removed_columns as $column ) {
+			/*
+foreach( $removed_columns as $column ) {
 				$alter_sql .= "DROP COLUMN `".$column['Field']."`, ";
 			}
+*/
 			$alter_sql = substr($alter_sql, 0, strlen($alter_sql)-2);
 			$query = "ALTER TABLE `" . $table . "` ".$alter_sql;
 			
@@ -466,5 +470,15 @@ class Aware_model extends CI_Model {
 		$this->db->where('rw', '1');
 		$this->db->update('mosquitto_permissions', array('rw' => 0));
 		return $this->db->affected_rows();
+	}
+	
+	function alive( $database, $table ) {
+		if( $this->input->post('device_id') == null ) return;
+		$data = array(
+			'device_id'=>$this->input->post('device_id'),
+			'last_ping'=>$this->input->post('ping'),
+			'ip'=>$this->input->ip_address()
+		);
+		$database->insert( $table, $data );
 	}
 }

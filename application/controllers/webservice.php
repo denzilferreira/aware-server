@@ -59,7 +59,10 @@ class Webservice extends CI_Controller {
             
             //we are just checking if this study is ongoing
             if( $this->input->post('study_check') == 1 ) {
-                $ok = array('message'=>'This study is ongoing.');
+                $ok = array(
+                	'status'=>$this->Aware_model->study_active($study_id),
+                	'config'=>$this->Researcher_model->get_study_configuration($study_id)
+                );
                 echo json_encode(array($ok));
                 return;
             }
@@ -384,9 +387,10 @@ class Webservice extends CI_Controller {
 			$devices = $this->input->post('devices_list');
 			
 			// Using Mosquitto-PHP client that we installed over PECL
-            $client = new Mosquitto\Client("aware", true);
+            
+			$client = new Mosquitto\Client("aware", true);
             $client->setTlsCertificates($this->config->item("public_keys")."server.crt"); //load server SSL certificate
-            $client->setTlsOptions(Mosquitto\Client::SSL_VERIFY_PEER, "tlsv1.2", NULL); //make sure client is using our server certificate to connect
+            $client->setTlsOptions(Mosquitto\Client::SSL_VERIFY_PEER, "tlsv1.2", NULL);
             $client->setCredentials($mqtt_conf['mqtt_username'], $mqtt_conf['mqtt_password']); //load study-specific user credentials so we can connect
 			$client->connect($mqtt_conf['mqtt_server'], $mqtt_conf['mqtt_port'], 60); //make connection, keep alive 30 seconds
 			
