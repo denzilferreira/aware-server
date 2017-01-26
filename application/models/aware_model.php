@@ -210,7 +210,7 @@ foreach( $removed_columns as $column ) {
 				$database->query($query);
                 
                 //add a non unique index for faster queries based on time and device_id conditions
-                $query = 'CREATE INDEX IF NOT EXISTS time_device ON `'.$table.'` (timestamp, device_id)';
+                $query = 'CREATE INDEX time_device ON `'.$table.'` (timestamp, device_id)';
                 $database->query($query);
 			}
 		}
