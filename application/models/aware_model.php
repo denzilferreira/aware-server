@@ -141,7 +141,7 @@ foreach( $columns_server as $cs ) {
 			}
 			
 			//nothing changed on this table
-			if( count($added_columns) == 0 && count($removed_columns) == 0 ) return;
+			if( count($added_columns) == 0 ) return;
 			
 			//Sync columns from the client on the server
 			$alter_sql = "";
