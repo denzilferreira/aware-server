@@ -5,13 +5,13 @@ class Researcher_model extends CI_Model {
 		parent::__construct();
 		$this->load->dbforge();
 	}
-	
+
 	function check_researcher( $database, $username='', $password='' ) {
 		$credentials = array('user'=>$username, 'pass'=>md5($password));
-		
+
 		$database->where($credentials);
 		$result = $database->get('researchers')->result_array();
-		
+
 		if( count($result) == 0 ) return false; //if we didn't get any result, this user credentials were wrong
 		return true; //all good, this is a valid user
 	}
@@ -22,14 +22,14 @@ class Researcher_model extends CI_Model {
 		$this->db->from('studies');
 		$this->db->join('users', 'studies.creator_id = users.id', 'left');
 		$this->db->where('studies.id', $study_id);
-		
+
 		$query = $this->db->get();
 
 		return $query->row_array();
 	}
-	
-	
-	function get_co_researchers_byid($study_id, $study_owner) {				
+
+
+	function get_co_researchers_byid($study_id, $study_owner) {
 		$query = "
 				SELECT users.id, users.first_name, users.last_name
 				FROM studies_privileges
@@ -39,57 +39,57 @@ class Researcher_model extends CI_Model {
 		$query = $this->db->query($query, array($study_id, $study_owner));
 		return $query->result_array();
 	}
-	
+
 	function add_coresearcher($email, $study_id) {
 		$query = $this->db->get_where('users', array('email' => $email));
 		$row = $query->row();
 		if (empty($row)){
-			
+
 			return 0;
 		}
 		$id = $row->id;
 		$data = array(
-					'study_id' => $study_id, 
+					'study_id' => $study_id,
 					'user_id' => $id,
 					'added' => time()
 					);
 		$this->db->insert('studies_privileges', $data);
 		return $this->db->affected_rows();
 	}
-	
-	
-	function delete_coresearcher($user_id, $study_id) {				
+
+
+	function delete_coresearcher($user_id, $study_id) {
 		$data = array(
-					'study_id' => $study_id, 
+					'study_id' => $study_id,
 					'user_id' => $user_id,
 					);
 		$this->db->delete('studies_privileges', $data);
 		return $this->db->affected_rows();
 	}
-	
-	
-	function get_researchers_studies($user_id) {				
+
+
+	function get_researchers_studies($user_id) {
 		$query = "
 				SELECT study_name, id, created, description, status
 				FROM studies WHERE id IN
-				(SELECT study_id FROM studies_privileges WHERE user_id = ?) 
+				(SELECT study_id FROM studies_privileges WHERE user_id = ?)
 				ORDER BY study_name";
 		$query = $this->db->query($query, array($user_id));
-		
+
 		return $query->result_array();
 	}
-	
+
 	function insert_new_study($database, $user_id, $study_name, $study_description) {
 		// Generate MQTT password
 		$mqtt_pass = random_string('alnum', 12);
 		$mqtt_mcrypt = $this->encrypt->encode($mqtt_pass);
 		$mqtt_hash = $this->pbkdf2->create_hash($mqtt_pass);
-		
+
 		// Load default database
 		$aware_db = $this->load->database('aware_dashboard', TRUE);
 
 		// Clean lastname
-		$lastname = str_replace(' ', '-', $this->session->userdata('last_name')); // Replaces all spaces with hyphens. 
+		$lastname = str_replace(' ', '-', $this->session->userdata('last_name')); // Replaces all spaces with hyphens.
 		$lastname = preg_replace('/[^A-Za-z0-9\-]/', '', $lastname); // Removes special chars.
 		$lastname = str_replace('-', '_', $lastname); // make sure no hyphens are remaining
 		$lastname = substr($lastname, 0, 10); // takes 10 first characters
@@ -106,16 +106,16 @@ class Researcher_model extends CI_Model {
 			'db_username' => 'username',
 			'db_password' => 'password',
 		);
-		
+
 		// Insert study details into aware database
 		$this->db->insert('studies', $data);
-		
+
 		// Get study ID so we can create a database
 		$this->db->select("MAX(id) as id");
 		$this->db->from("studies");
 		$this->db->where("creator_id", $user_id);
 		$query = $this->db->get();
-		
+
 		$row = $query->row();
 		$study_id = $row->id;
 
@@ -130,7 +130,7 @@ class Researcher_model extends CI_Model {
 			// Create user for newly created database
 			$query = "CREATE USER ?@'%' IDENTIFIED BY ?";
 			$this->db->query($query, array($db_name, $new_password));
-			
+
 			$query = "GRANT SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, INDEX, TRIGGER ON " . $db_name . ".* TO '" . $db_name . "'@'%'";
 			$this->db->query($query);
 
@@ -145,7 +145,7 @@ class Researcher_model extends CI_Model {
 			$this->db->where('id', $study_id);
 			$this->db->update('studies', array('db_username' => $database->username, 'db_password' => $this->encrypt->encode($database->password)));
 		}
-		
+
 		// Update db_name
 		$this->db->where('id', $study_id);
 		$this->db->update('studies', array('db_name' => $db_name));
@@ -153,7 +153,7 @@ class Researcher_model extends CI_Model {
 		// Set study specific database
 		// $this->db->query('use ' . $database->database); // NOT like this
 		$this->dbforge->set_database($database);
-		
+
 		// Create required tables on the study database
 		// Create mqtt history table
 		$this->dbforge->add_field('id');
@@ -171,34 +171,34 @@ class Researcher_model extends CI_Model {
 			'user_id' => $user_id,
 			'added' => time(),
 		);
-		
+
 		// Change back to default database
 		$this->dbforge->set_database($this->load->database('aware_dashboard', TRUE));
 
 		// Insert study config
 		$this->db->insert('studies_configurations', array('study_id' => $study_id, 'config' => '[]'));
 		$this->db->insert('studies_privileges', $data);
-		
+
 		// Create study user for MQTT server
 		// Insert user that dashboard will utilize for sending messages
 		$this->db->insert('mosquitto_users', array('username' => $study_id, 'pw' => $mqtt_hash, 'super' => 0));
 		// Set privileges for previousl created user (topic = study_id/+/#, read/write rights)
 		$this->db->insert('mosquitto_permissions', array('username' => $study_id, 'topic' => $study_id . '/+/#', 'rw' => 2));
-		
+
 		// Success
 		return $study_id;
 
 	}
-	
+
 	function check_study_privileges($study_id, $user_id) {
 		$data = array($study_id, $user_id);
 		$this->db->select('*');
 		$this->db->from('studies_privileges');
 		$this->db->where('study_id', $study_id);
 		$this->db->where('user_id', $user_id);
-			
+
 		$query = $this->db->get();
-		
+
 		$resultset = $query->result_array();
 		if (empty($resultset)) {
 			return false;
@@ -215,7 +215,7 @@ class Researcher_model extends CI_Model {
 		$this->db->where("creator_id", $user_id);
 
 		$query = $this->db->get();
-		
+
 		$resultset = $query->result_array();
 		if (empty($resultset)) {
 			return false;
@@ -231,7 +231,7 @@ class Researcher_model extends CI_Model {
 		$database->where("device_id", $device_id);
 
 		$query = $database->get();
-		
+
 		$resultset = $query->result_array();
 		if (empty($resultset)) {
 			return false;
@@ -239,7 +239,7 @@ class Researcher_model extends CI_Model {
 			 return true;
 		}
 	}
-	
+
 	// Edit study description
 	function edit_description($study_id, $description)
 	{
@@ -249,14 +249,14 @@ class Researcher_model extends CI_Model {
 
 		$this->db->where('id', $study_id);
 		$this->db->update('studies', $data);
-		
+
 		if ($this->db->affected_rows() == 1) {
 			return $description;
 		} else {
 			return 0;
 		}
 	}
-	
+
 	// Edit device labels
 	function edit_device_label($database, $device_id_list, $label) {
 		foreach ($device_id_list as $device_id) {
@@ -265,7 +265,7 @@ class Researcher_model extends CI_Model {
 			$database->update($database->database.'.aware_device', array('label' => $label));
 		}
 	}
-	
+
 	function update_study_status($study_id, $value)
 	{
 		$data = array(
@@ -276,9 +276,9 @@ class Researcher_model extends CI_Model {
 		$this->db->update('studies', $data);
 		return $this->db->affected_rows();
 	}
-	
+
 	// Get table names and information for specific study
-	function get_study_tables($database) {				
+	function get_study_tables($database) {
 		$query = "
 				SELECT TABLE_NAME, TABLE_ROWS
 				FROM information_schema.TABLES
@@ -286,11 +286,11 @@ class Researcher_model extends CI_Model {
 				AND TABLE_NAME NOT IN ('studies', 'study_privileges', 'configurations', 'users', 'user_levels', 'mqtt_history')
 				ORDER BY TABLE_ROWS DESC";
 		$query = $database->query($query, array($database->database));
-		
+
 		return $query->result_array();
 	}
 
-	
+
 	// Get devices linked to specific study
 	function get_specific_devices($database, $device_list) {
 		if ($database->table_exists('aware_device')){
@@ -308,15 +308,15 @@ class Researcher_model extends CI_Model {
 			return array();
 		}
 	}
-	
+
 	// Get study configuration
 	function get_study_configuration($study_id) {
 		$this->db->select('config');
 		$this->db->from('studies_configurations');
 		$this->db->where('study_id', $study_id);
-		
+
 		$query = $this->db->get();
-		
+
 		$result_array = $query->result_array();
 		if(empty($result_array)) {
 			return false;
@@ -324,20 +324,20 @@ class Researcher_model extends CI_Model {
 			return $result_array[0]['config'];
 		}
 	}
-	
+
 	function update_study_config($study_id, $config) {
 		$this->db->where('study_id', $study_id);
 		$this->db->update('studies_configurations', array('config' => $config, 'edited' => time()));
 		return $this->db->affected_rows();
 	}
-	
+
 	function get_device_id($database, $android_device_id_list) {
 		$database->select('aware_device._id');
 		$database->from($database->database.'.aware_device');
 		$database->where_in('device_id', $android_device_id_list);
-		
+
 		$query = $database->get();
-		
+
 		$result_array = $query->result_array();
 		if(empty($result_array)) {
 			return false;
@@ -345,14 +345,14 @@ class Researcher_model extends CI_Model {
 			return $result_array;
 		}
 	}
-	
+
 	function get_study_creation_date($study_id) {
 		$this->db->select('created');
 		$this->db->from('studies');
 		$this->db->where('id', $study_id);
-		
+
 		$query = $this->db->get();
-		
+
 		$result_array = $query->result_array();
 		return $result_array[0]['created'];
 	}
@@ -361,33 +361,35 @@ class Researcher_model extends CI_Model {
 		$this->db->select('db_name');
 		$this->db->from('studies');
 		$this->db->where('id', $study_id);
-		
+
 		$query = $this->db->get();
-		
+
 		$result_array = $query->result_array();
 		return $result_array[0]['db_name'];
 	}
-	
+
 	function get_visualization_data($database, $device_list, $table, $start, $end) {
-		$database->select($table . '.device_id, COUNT(' . $table . '._id) as count');
-		$database->where($table . '.timestamp BETWEEN ' . $start . ' AND ' . $end, NULL, FALSE);
-		$database->where_in($table . '.device_id', $device_list);
-		$database->from($database->database.'.'.$table);
-		$database->group_by($table . '.device_id');
-		
-		$query = $database->get();
-		
-		$result_array = $query->result_array();
-		if(empty($result_array)) {
-			return array();
-		} else {
-			return $result_array;
-		}
+		// $database->select($table . '.device_id, COUNT(' . $table . '._id) as count');
+		// $database->where($table . '.timestamp BETWEEN ' . $start . ' AND ' . $end, NULL, FALSE);
+		// $database->where_in($table . '.device_id', $device_list);
+		// $database->from($database->database.'.'.$table);
+		// $database->group_by($table . '.device_id');
+		//
+		// $query = $database->get();
+		//
+		// $result_array = $query->result_array();
+		// if(empty($result_array)) {
+		// 	return array();
+		// } else {
+		// 	return $result_array;
+		// }
+		//NOTE: disabling this because when dataset gets huge, your server will cry.
+		return array();
 	}
 
 	function get_visualization_data_esms($database, $device_list, $table, $start, $end) {
 		$database->select('esms.device_id, from_unixtime(esms.timestamp/1000, \'%Y-%m-%d\') as day, COUNT(*) as count', FALSE);
-		
+
 		$database->from('esms');
 		$database->join('aware_device', 'aware_device.device_id = esms.device_id', 'left', FALSE);
 		$database->where('esms.timestamp BETWEEN ' . $start . ' AND ' . $end, NULL, FALSE);
@@ -397,7 +399,7 @@ class Researcher_model extends CI_Model {
 		$database->order_by('day', 'ASC');
 
 		$query = $database->get();
-		
+
 		$result_array = $query->result_array();
 		if(empty($result_array)) {
 			return array();
@@ -405,7 +407,7 @@ class Researcher_model extends CI_Model {
 			return $result_array;
 		}
 	}
-	
+
 	function add_esm_message($database, $topic, $message, $receivers) {
 		$data = array(
 					"timestamp" => time(),
@@ -413,45 +415,45 @@ class Researcher_model extends CI_Model {
 					"message" => $message,
 					"receivers" => $receivers,
 					);
-					
+
 		$database->insert($database->database.'.mqtt_history', $data);
 	}
-	
+
 	function get_mqtt_history($database) {
 		$database->order_by('timestamp', 'DESC');
 		$database->select('timestamp, topic, message, receivers');
 		$database->from($database->database.'.mqtt_history');
-		
+
 		$query = $database->get();
-		
+
 		$resultset = $query->result_array();
 		if (empty($resultset)) {
 			return array();
 		} else {
 			 return $resultset;
-		}		
+		}
 	}
-	
+
 	function get_user_database_rights($database) {
 		$database->select('Select_priv, Insert_priv, Update_priv, Delete_priv, Create_priv, Alter_priv');
 		$database->from('mysql.user');
 		$database->where('user', $database->username);
-		
+
 		$query = $database->get();
-		
+
 		$resultset = $query->result_array();
 		if (empty($resultset)) {
 			return array();
 		} else {
 			 return $resultset[0];
-		}		
+		}
 	}
-	
+
 	function get_device_data($database, $device_search = '', $order_by_column = '', $order_by_type = '', $offset = '', $limit = '') {
 		if (!$database->table_exists('aware_device')){
 			return array();
 		}
-		
+
 		if (strlen($order_by_column) == 0) {
 			$order_by_column = 'aware_device._id';
 		}
@@ -464,7 +466,7 @@ class Researcher_model extends CI_Model {
 		if (strlen($limit) == 0) {
 			$limit = '10';
 		}
-		
+
 		$database->select('aware_device.device_id, aware_device.label');
 		$database->from($database->database.'.aware_device');
 		if (strlen($device_search) > 0) {
@@ -474,12 +476,12 @@ class Researcher_model extends CI_Model {
 			$database->limit($limit, $offset);
 		}
 		$database->order_by($order_by_column, $order_by_type);
-		
-		
+
+
 		// Execute query and fetch results
 		$query = $database->get();
 		$resultset = $query->result_array();
-		
+
 		// Get total count without the limit
 		$database->select('COUNT(*) AS total');
 		if (strlen($device_search) > 0) {
@@ -487,17 +489,17 @@ class Researcher_model extends CI_Model {
 		}
 		$database->from($database->database.'.aware_device');
 		$query = $database->get();
-		
+
 		$resultset_total = $query->result_array();
 		$resultset[] = $resultset_total[0];
-		
+
 		if (empty($resultset)) {
 			return array();
 		} else {
 			 return $resultset;
-		}	
+		}
 	}
-	
+
 	function get_device_data_all($database, $device_search = '') {
 		$database->select('aware_device.device_id');
 		$database->from($database->database.'.aware_device');
@@ -508,18 +510,18 @@ class Researcher_model extends CI_Model {
 		// Execute query and fetch results
 		$query = $database->get();
 		$resultset = $query->result_array();
-		
+
 		// Get total count without the limit
 		$total = $database->query('SELECT FOUND_ROWS() AS total');
 		$resultset["total"] = $total->row()->total;
-		
+
 		if (empty($resultset)) {
 			return array();
 		} else {
 			 return $resultset;
-		}		
+		}
 	}
-	
+
 	function study_has_devices($database) {
 		if ($database->table_exists('aware_device')){
 			return true;
@@ -531,7 +533,7 @@ class Researcher_model extends CI_Model {
 	function delete_study($database, $study_id) {
 		# Get study database/user name
 		$db_name = $this->get_study_db_name($study_id);
-		
+
 		# Delete study information
 		$this->db->where("id", $study_id);
 		$this->db->delete("studies");
@@ -675,7 +677,7 @@ class Researcher_model extends CI_Model {
 		} else {
 			 return $resultset;
 		}
-	} 
+	}
 
 	function remove_device($database, $study_tables, $device_id) {
 		// Delete mosquitto user
@@ -696,5 +698,5 @@ class Researcher_model extends CI_Model {
 
 		return true;
 	}
-	
+
 }
