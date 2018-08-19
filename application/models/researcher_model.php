@@ -94,6 +94,7 @@ class Researcher_model extends CI_Model {
 		$lastname = str_replace('-', '_', $lastname); // make sure no hyphens are remaining
 		$lastname = substr($lastname, 0, 10); // takes 10 first characters
 		// Study information
+
 		$data = array(
 			'description' => $study_description,
 			'study_name' => $study_name,
@@ -105,6 +106,7 @@ class Researcher_model extends CI_Model {
 			'db_port' => $database->port ?: '3306',
 			'db_username' => 'username',
 			'db_password' => 'password',
+			'db_name' => "Temporary_name", // Marek: This is only needed here, code is already in later to update this.
 		);
 
 		// Insert study details into aware database
@@ -176,7 +178,7 @@ class Researcher_model extends CI_Model {
 		$this->dbforge->set_database($this->load->database('aware_dashboard', TRUE));
 
 		// Insert study config
-		$this->db->insert('studies_configurations', array('study_id' => $study_id, 'config' => '[]'));
+		$this->db->insert('studies_configurations', array('study_id' => $study_id, 'config' => '[]', 'edited' => time()));
 		$this->db->insert('studies_privileges', $data);
 
 		// Create study user for MQTT server
