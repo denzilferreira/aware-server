@@ -94,7 +94,6 @@ class Researcher_model extends CI_Model {
 		$lastname = str_replace('-', '_', $lastname); // make sure no hyphens are remaining
 		$lastname = substr($lastname, 0, 10); // takes 10 first characters
 		// Study information
-
 		$data = array(
 			'description' => $study_description,
 			'study_name' => $study_name,
