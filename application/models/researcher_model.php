@@ -105,6 +105,7 @@ class Researcher_model extends CI_Model {
 			'db_port' => $database->port ?: '3306',
 			'db_username' => 'username',
 			'db_password' => 'password',
+			'db_name' => "Temporary_name", // Need a temp name here since the DB doesn't allow null for this
 		);
 
 		// Insert study details into aware database
@@ -176,7 +177,7 @@ class Researcher_model extends CI_Model {
 		$this->dbforge->set_database($this->load->database('aware_dashboard', TRUE));
 
 		// Insert study config
-		$this->db->insert('studies_configurations', array('study_id' => $study_id, 'config' => '[]'));
+		$this->db->insert('studies_configurations', array('study_id' => $study_id, 'config' => '[]', 'edited' => time())); // have to add a default for edited here since it doesn't allow null
 		$this->db->insert('studies_privileges', $data);
 
 		// Create study user for MQTT server
