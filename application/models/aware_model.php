@@ -195,6 +195,9 @@ foreach( $removed_columns as $column ) {
 					if( strcasecmp("social_source", $first_word ) == 0 ) {
 						$c = str_replace("text", "varchar(255)", $c );
 					}
+					if( strcasecmp("fitbit_data", $first_word ) == 0 ) {
+						$c = str_replace("text", "longtext", $c );
+					}
 					
 					$sql .= substr_replace( $c, '`'.$first_word.'`', 0, strpos($c, " ")) . ', ';
 				}
